@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/actionNotificationItem"
+        android:icon="@mipmap/ic_launcher"
+        android:orderInCategory="1"
+        android:title="Shops"></item>
+    <item
+        android:id="@+id/actionNotificationItem2"
+        android:icon="@mipmap/ic_launcher"
+        android:orderInCategory="2"
+        android:title="Map"></item>
+</menu>
