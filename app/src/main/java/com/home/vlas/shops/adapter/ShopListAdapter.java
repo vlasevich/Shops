@@ -8,14 +8,14 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.home.vlas.shops.R;
-import com.home.vlas.shops.dto.ShopDTO;
+import com.home.vlas.shops.model.Shop;
 
 import java.util.List;
 
 public class ShopListAdapter extends RecyclerView.Adapter<ShopListAdapter.RemindViewHolder> {
-    private List<ShopDTO> data;
+    private List<Shop> data;
 
-    public ShopListAdapter(List<ShopDTO> data) {
+    public ShopListAdapter(List<Shop> data) {
         this.data = data;
     }
 
@@ -27,7 +27,7 @@ public class ShopListAdapter extends RecyclerView.Adapter<ShopListAdapter.Remind
 
     @Override
     public void onBindViewHolder(RemindViewHolder holder, int position) {
-        holder.title.setText(data.get(position).getTitle());
+        holder.title.setText(data.get(position).getName());
     }
 
     @Override

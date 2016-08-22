@@ -6,6 +6,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
 import com.home.vlas.shops.fragment.AbstractTabFragment;
+import com.home.vlas.shops.fragment.MapFragment;
 import com.home.vlas.shops.fragment.ShopFragment;
 
 import java.util.HashMap;
@@ -25,7 +26,7 @@ public class TabsPagerFragmentAdapter extends FragmentPagerAdapter {
     private void initTabMap(Context context) {
         tabs = new HashMap<>();
         tabs.put(0, ShopFragment.getInstance(context));
-        tabs.put(1, ShopFragment.getInstance(context));
+        tabs.put(1, MapFragment.getInstance(context));
     }
 
     @Override
