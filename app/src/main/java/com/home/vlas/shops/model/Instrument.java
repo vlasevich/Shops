@@ -12,9 +12,6 @@ public class Instrument {
     @Expose
     private Integer quantity;
 
-    /**
-     * No args constructor for use in serialization
-     */
     public Instrument() {
     }
 
@@ -27,16 +24,10 @@ public class Instrument {
         this.quantity = quantity;
     }
 
-    /**
-     * @return The instrument
-     */
     public DetailedInstrument getInstrument() {
         return instrument;
     }
 
-    /**
-     * @param instrument The instrument
-     */
     public void setInstrument(DetailedInstrument instrument) {
         this.instrument = instrument;
     }
@@ -46,16 +37,10 @@ public class Instrument {
         return this;
     }
 
-    /**
-     * @return The quantity
-     */
     public Integer getQuantity() {
         return quantity;
     }
 
-    /**
-     * @param quantity The quantity
-     */
     public void setQuantity(Integer quantity) {
         this.quantity = quantity;
     }

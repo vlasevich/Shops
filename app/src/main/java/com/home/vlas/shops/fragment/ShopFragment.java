@@ -56,7 +56,9 @@ public class ShopFragment extends AbstractTabFragment {
         rv.setLayoutManager(new LinearLayoutManager(context));
         shopList = getShopsArray();
         getInstrumentsArray();
-        //rv.setAdapter(new ShopListAdapter(shopList));
+
+        //GET DATA FROM DB
+        rv.setAdapter(new ShopListAdapter(showShopList()));
         return this.view;
 
 
@@ -73,8 +75,8 @@ public class ShopFragment extends AbstractTabFragment {
                 instrumentList = response.body();
                 System.out.println(instrumentList);
                 for (Instrument i : instrumentList) {
-                    System.out.println(i.getInstrument().getBrand());
-                    System.out.println(i.getQuantity());
+                    //System.out.println(i.getInstrument().getBrand());
+                    //System.out.println(i.getQuantity());
                 }
             }
 
@@ -84,6 +86,22 @@ public class ShopFragment extends AbstractTabFragment {
             }
         });
         return instrumentList;
+    }
+
+    private void updateShopDB(List<Shop> list) {
+        DataBaseHelper db = new DataBaseHelper(getContext());
+        for (Shop shop : list) {
+            Log.i("DB", shop.getName());
+            db.createShop(shop);
+        }
+    }
+
+    private List<Shop> showShopList() {
+        DataBaseHelper db = new DataBaseHelper(getContext());
+        for (Shop shop : db.getAllShops()) {
+            Log.i("DBS", "shop: " + shop.getAddress());
+        }
+        return db.getAllShops();
     }
 
     private List<Shop> getShopsArray() {
@@ -96,7 +114,12 @@ public class ShopFragment extends AbstractTabFragment {
                 shopList = response.body();
 
                 System.out.println(shopList.size());
-                rv.setAdapter(new ShopListAdapter(shopList));
+
+                //updateShopDB(shopList);
+                showShopList();
+
+                // GET DATA FROM WEB
+                //rv.setAdapter(new ShopListAdapter(shopList));
             }
 
             @Override

@@ -195,7 +195,28 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete(TABLE_INSTRUMENT, KEY_INSTRUMENT_ID + "=?", new String[]{String.valueOf(instId)});
     }
-    //TODO - UPDATE INSTRUMENT
+
+    public int updateInstrument(Instrument inst) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+        values.put(KEY_INSTRUMENT_ID, inst.getInstrument().getId());
+        values.put(KEY_BRAND, inst.getInstrument().getBrand());
+        values.put(KEY_MODEL, inst.getInstrument().getModel());
+        values.put(KEY_IMAGEURL, inst.getInstrument().getImageUrl());
+        values.put(KEY_TYPE, inst.getInstrument().getType());
+        values.put(KEY_PRICE, inst.getInstrument().getPrice());
+        values.put(KEY_QUANTITY, inst.getQuantity());
+
+        return db.update(TABLE_INSTRUMENT, values, KEY_INSTRUMENT_ID + "=?", new String[]{String.valueOf(inst.getInstrument().getId())});
+    }
+
+    public void closeBD() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        if (db != null && db.isOpen()) {
+            db.close();
+        }
+    }
 
     @Override
     public void onCreate(SQLiteDatabase db) {

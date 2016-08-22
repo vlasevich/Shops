@@ -9,7 +9,6 @@ import android.view.ViewGroup;
 
 import com.home.vlas.shops.R;
 import com.home.vlas.shops.db.DataBaseHelper;
-import com.home.vlas.shops.model.Location;
 import com.home.vlas.shops.model.Shop;
 
 public class MapFragment extends AbstractTabFragment {
@@ -39,6 +38,9 @@ public class MapFragment extends AbstractTabFragment {
     }
 
     public void runBD() {
+        System.out.println("=============");
+        System.out.println("RUNBD()");
+        System.out.println("=============");
         db = new DataBaseHelper(getContext());
         /*Shop shop=new Shop(111112,"a,","s","222",new Location(11,22),"sd");
         long shop_db=db.createShop(shop);
@@ -48,14 +50,14 @@ public class MapFragment extends AbstractTabFragment {
             System.out.println(shop.getId());
             System.out.println(shop.getAddress());
         }
-        if (db.getShopCount() == 2) {
+        /*if (db.getShopCount() == 2) {
             db.deleteShop(11111);
             System.out.println("SHOP WAS DELETED");
         } else {
             Shop shop = new Shop(11114, "a,", "s", "222", new Location(11, 22), "sd");
             long shop_db = db.createShop(shop);
             db.createShop(shop);
-        }
+        }*/
     }
 
 }

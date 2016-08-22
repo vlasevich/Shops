@@ -24,9 +24,6 @@ public class DetailedInstrument {
     @Expose
     private Double price;
 
-    /**
-     * No args constructor for use in serialization
-     */
     public DetailedInstrument() {
     }
 
@@ -47,16 +44,10 @@ public class DetailedInstrument {
         this.price = price;
     }
 
-    /**
-     * @return The id
-     */
     public Integer getId() {
         return id;
     }
 
-    /**
-     * @param id The id
-     */
     public void setId(Integer id) {
         this.id = id;
     }
@@ -66,16 +57,10 @@ public class DetailedInstrument {
         return this;
     }
 
-    /**
-     * @return The brand
-     */
     public String getBrand() {
         return brand;
     }
 
-    /**
-     * @param brand The brand
-     */
     public void setBrand(String brand) {
         this.brand = brand;
     }
@@ -85,16 +70,10 @@ public class DetailedInstrument {
         return this;
     }
 
-    /**
-     * @return The model
-     */
     public String getModel() {
         return model;
     }
 
-    /**
-     * @param model The model
-     */
     public void setModel(String model) {
         this.model = model;
     }
@@ -104,16 +83,10 @@ public class DetailedInstrument {
         return this;
     }
 
-    /**
-     * @return The imageUrl
-     */
     public String getImageUrl() {
         return imageUrl;
     }
 
-    /**
-     * @param imageUrl The imageUrl
-     */
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
     }
@@ -123,16 +96,10 @@ public class DetailedInstrument {
         return this;
     }
 
-    /**
-     * @return The type
-     */
     public String getType() {
         return type;
     }
 
-    /**
-     * @param type The type
-     */
     public void setType(String type) {
         this.type = type;
     }
@@ -142,16 +109,10 @@ public class DetailedInstrument {
         return this;
     }
 
-    /**
-     * @return The price
-     */
     public Double getPrice() {
         return price;
     }
 
-    /**
-     * @param price The price
-     */
     public void setPrice(Double price) {
         this.price = price;
     }
