@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 
 import com.home.vlas.shops.R;
 import com.home.vlas.shops.adapter.ShopListAdapter;
+import com.home.vlas.shops.db.DataBaseHelper;
 import com.home.vlas.shops.model.Instrument;
 import com.home.vlas.shops.model.Shop;
 import com.home.vlas.shops.rest.ApiClient;
@@ -32,6 +33,7 @@ public class ShopFragment extends AbstractTabFragment {
     public List<Shop> shopList = new ArrayList<>();
     List<Instrument> instrumentList = new ArrayList<Instrument>();
     private RecyclerView rv;
+    private DataBaseHelper db;
 
     public static ShopFragment getInstance(Context context) {
         Bundle args = new Bundle();
