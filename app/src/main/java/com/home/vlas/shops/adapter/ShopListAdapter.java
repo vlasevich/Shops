@@ -1,5 +1,6 @@
 package com.home.vlas.shops.adapter;
 
+import android.content.Intent;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -8,15 +9,16 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.home.vlas.shops.R;
+import com.home.vlas.shops.activity.ShopActivity;
 import com.home.vlas.shops.model.Shop;
 
 import java.util.List;
 
 public class ShopListAdapter extends RecyclerView.Adapter<ShopListAdapter.RemindViewHolder> {
-    private List<Shop> data;
+    private static List<Shop> data;
 
     public ShopListAdapter(List<Shop> data) {
-        this.data = data;
+        ShopListAdapter.data = data;
     }
 
     @Override
@@ -35,7 +37,7 @@ public class ShopListAdapter extends RecyclerView.Adapter<ShopListAdapter.Remind
         return data.size();
     }
 
-    public static class RemindViewHolder extends RecyclerView.ViewHolder {
+    public static class RemindViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         CardView cardView;
         TextView title;
 
@@ -44,13 +46,23 @@ public class ShopListAdapter extends RecyclerView.Adapter<ShopListAdapter.Remind
             itemView.findViewById(R.id.cardView);
             title = (TextView) itemView.findViewById(R.id.title);
 
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    System.out.println("CLICK");
-                }
-            });
+            itemView.setOnClickListener(this);
+        }
+
+        private void openShopActivity(View view, int position) {
+            Intent myIntent = new Intent(view.getContext(), ShopActivity.class);
+            myIntent.putExtra("SHOP_NAME", data.get(position).getName());
+            myIntent.putExtra("SHOP_ADDRESS", data.get(position).getAddress());
+            myIntent.putExtra("SHOP_PHONE", data.get(position).getPhone());
+            myIntent.putExtra("SHOP_WEBSITE", data.get(position).getWebsite());
+            view.getContext().startActivity(myIntent);
+        }
+
+        @Override
+        public void onClick(View view) {
+            System.out.println(getAdapterPosition());
+            System.out.println(data.get(getAdapterPosition()).getWebsite());
+            openShopActivity(view, getAdapterPosition());
         }
     }
-
 }

@@ -29,7 +29,9 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     private static final String KEY_LATITUDE = "latitude";
     private static final String KEY_LONGTITUDE = "longitude";
 
-    private static final String KEY_INSTRUMENT_ID = "id";
+    private static final String KEY_INST_PRI_KEY = "id";
+    private static final String KEY_SHOP_INST_ID = "shop_id";
+    private static final String KEY_INSTRUMENT_ID = "inst_id";
     private static final String KEY_BRAND = "brand";
     private static final String KEY_MODEL = "model";
     private static final String KEY_IMAGEURL = "imageUrl";
@@ -46,7 +48,9 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             + KEY_LONGTITUDE + " TEXT);";
 
     private static final String CREATE_TABLE_INSTRUMENTS = "CREATE TABLE " + TABLE_INSTRUMENT
-            + "(" + KEY_INSTRUMENT_ID + " INTEGER PRIMARY KEY,"
+            + "(" + KEY_INST_PRI_KEY + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+            +KEY_SHOP_INST_ID + " TEXT,"
+            +KEY_INSTRUMENT_ID + " TEXT,"
             + KEY_BRAND + " TEXT,"
             + KEY_MODEL + " TEXT,"
             + KEY_IMAGEURL + " TEXT,"
@@ -148,9 +152,10 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         db.delete(TABLE_SHOP, KEY_SHOP_ID + "=?", new String[]{String.valueOf(shopId)});
     }
 
-    public long createInstrument(Instrument inst) {
+    public long createInstrument(long shopId, Instrument inst) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
+        values.put(KEY_SHOP_INST_ID,shopId);
         values.put(KEY_INSTRUMENT_ID, inst.getInstrument().getId());
         values.put(KEY_BRAND, inst.getInstrument().getBrand());
         values.put(KEY_MODEL, inst.getInstrument().getModel());
@@ -172,6 +177,9 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         if (c.moveToFirst()) {
             do {
                 Instrument inst = new Instrument();
+
+                //Log.e("TAG",c.getString(c.getColumnIndex(KEY_INST_PRI_KEY)));
+
                 inst.setQuantity(c.getInt(c.getColumnIndex(KEY_QUANTITY)));
                 DetailedInstrument detailInst = new DetailedInstrument();
                 detailInst.setId(c.getInt(c.getColumnIndex(KEY_INSTRUMENT_ID)));
@@ -187,13 +195,42 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         return instList;
     }
 
-    /*public void deleteShop(long shopId) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        db.delete(TABLE_SHOP, KEY_SHOP_ID + "=?", new String[]{String.valueOf(shopId)});
-    }*/
+    public List<Instrument> getAllInstByShopId(long shopId){
+        List<Instrument> instList = new ArrayList<>();
+        String selectQuery = "SELECT * FROM " + TABLE_INSTRUMENT
+                +" WHERE "+KEY_SHOP_INST_ID+" = "+shopId;
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c = db.rawQuery(selectQuery, null);
+
+        if (c.moveToFirst()) {
+            do {
+                Instrument inst = new Instrument();
+
+                //Log.e("TAG",c.getString(c.getColumnIndex(KEY_INST_PRI_KEY)));
+
+                inst.setQuantity(c.getInt(c.getColumnIndex(KEY_QUANTITY)));
+                DetailedInstrument detailInst = new DetailedInstrument();
+                detailInst.setId(c.getInt(c.getColumnIndex(KEY_INSTRUMENT_ID)));
+                detailInst.setBrand(c.getString(c.getColumnIndex(KEY_BRAND)));
+                detailInst.setModel(c.getString(c.getColumnIndex(KEY_MODEL)));
+                detailInst.setImageUrl(c.getString(c.getColumnIndex(KEY_IMAGEURL)));
+                detailInst.setType(c.getString(c.getColumnIndex(KEY_TYPE)));
+                detailInst.setPrice(c.getDouble(c.getColumnIndex(KEY_PRICE)));
+                inst.setInstrument(detailInst);
+                instList.add(inst);
+            } while (c.moveToNext());
+        }
+        return instList;
+    }
+
     public void deleteInstrument(long instId) {
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete(TABLE_INSTRUMENT, KEY_INSTRUMENT_ID + "=?", new String[]{String.valueOf(instId)});
+    }
+
+    public void deleteInstById(int id){
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(TABLE_INSTRUMENT, KEY_INSTRUMENT_ID + "="+id, null);
     }
 
     public int updateInstrument(Instrument inst) {

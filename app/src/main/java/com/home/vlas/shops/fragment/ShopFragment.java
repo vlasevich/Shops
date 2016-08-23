@@ -33,7 +33,7 @@ public class ShopFragment extends AbstractTabFragment {
     public List<Shop> shopList = new ArrayList<>();
     List<Instrument> instrumentList = new ArrayList<Instrument>();
     private RecyclerView rv;
-    private DataBaseHelper db;
+
 
     public static ShopFragment getInstance(Context context) {
         Bundle args = new Bundle();
@@ -54,13 +54,14 @@ public class ShopFragment extends AbstractTabFragment {
         view = inflater.inflate(LAYOUT, container, false);
         rv = (RecyclerView) view.findViewById(R.id.recyclerView);
         rv.setLayoutManager(new LinearLayoutManager(context));
-        shopList = getShopsArray();
-        getInstrumentsArray();
+
+        getShopsData();
+
+        //getInstrumentsArray();
 
         //GET DATA FROM DB
-        rv.setAdapter(new ShopListAdapter(showShopList()));
+        //rv.setAdapter(new ShopListAdapter(showShopList()));
         return this.view;
-
 
     }
 
@@ -71,7 +72,6 @@ public class ShopFragment extends AbstractTabFragment {
         call.enqueue(new Callback<List<Instrument>>() {
             @Override
             public void onResponse(Call<List<Instrument>> call, Response<List<Instrument>> response) {
-
                 instrumentList = response.body();
                 System.out.println(instrumentList);
                 for (Instrument i : instrumentList) {
@@ -104,7 +104,13 @@ public class ShopFragment extends AbstractTabFragment {
         return db.getAllShops();
     }
 
-    private List<Shop> getShopsArray() {
+    private void getShopsData() {
+        List<Shop> shopList = getShopsDataFromWeb();
+        rv.setAdapter(new ShopListAdapter(shopList));
+        //rv.setAdapter(new ShopListAdapter(getShopsDataFromDB()));
+    }
+
+    private List<Shop> getShopsDataFromWeb() {
         Log.i("TAG", "----====START====----");
         ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
         Call<List<Shop>> call = apiService.getShops();
@@ -112,14 +118,11 @@ public class ShopFragment extends AbstractTabFragment {
             @Override
             public void onResponse(Call<List<Shop>> call, Response<List<Shop>> response) {
                 shopList = response.body();
-
                 System.out.println(shopList.size());
 
+                rv.setAdapter(new ShopListAdapter(shopList));
                 //updateShopDB(shopList);
                 showShopList();
-
-                // GET DATA FROM WEB
-                //rv.setAdapter(new ShopListAdapter(shopList));
             }
 
             @Override
@@ -128,6 +131,11 @@ public class ShopFragment extends AbstractTabFragment {
             }
         });
         return shopList;
+    }
+
+    private List<Shop> getShopsDataFromDB() {
+        DataBaseHelper db = new DataBaseHelper(getContext());
+        return db.getAllShops();
     }
 
 }

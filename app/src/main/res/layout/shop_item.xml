@@ -27,18 +27,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingBottom="5dp"
+                android:text="SHOP_NAME"
                 android:textColor="@color/colorBlack"
-                android:textSize="8pt" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="TEST" />
-            </LinearLayout>
+                android:textSize="12pt" />
 
         </LinearLayout>
 
