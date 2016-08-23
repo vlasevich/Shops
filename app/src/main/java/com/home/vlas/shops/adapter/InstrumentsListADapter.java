@@ -11,10 +11,11 @@ import android.widget.TextView;
 import com.home.vlas.shops.R;
 import com.home.vlas.shops.model.Instrument;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class InstrumentsListAdapter extends BaseAdapter {
-    private List<Instrument> instList;
+    private List<Instrument> instList = new ArrayList<>();
     private Activity activity;
     private LayoutInflater layoutInflater;
 
@@ -25,7 +26,11 @@ public class InstrumentsListAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
+        if (instList != null) {
         return instList.size();
+        } else
+            return 0;
+
     }
 
     @Override

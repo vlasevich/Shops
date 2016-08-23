@@ -51,6 +51,7 @@ public class ShopListAdapter extends RecyclerView.Adapter<ShopListAdapter.Remind
 
         private void openShopActivity(View view, int position) {
             Intent myIntent = new Intent(view.getContext(), ShopActivity.class);
+            myIntent.putExtra("SHOP_ID", position);
             myIntent.putExtra("SHOP_NAME", data.get(position).getName());
             myIntent.putExtra("SHOP_ADDRESS", data.get(position).getAddress());
             myIntent.putExtra("SHOP_PHONE", data.get(position).getPhone());
