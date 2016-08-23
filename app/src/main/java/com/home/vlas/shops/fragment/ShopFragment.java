@@ -3,6 +3,7 @@ package com.home.vlas.shops.fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -26,7 +27,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
-public class ShopFragment extends AbstractTabFragment {
+public class ShopFragment extends AbstractTabFragment implements SwipeRefreshLayout.OnRefreshListener {
     public static final String BASE_URL = "http://aschoolapi.appspot.com/";
     private static final String TAG = ShopFragment.class.getSimpleName();
     private static final int LAYOUT = R.layout.fragment_shop;
@@ -34,7 +35,7 @@ public class ShopFragment extends AbstractTabFragment {
     public List<Shop> shopList = new ArrayList<>();
 
     private RecyclerView rv;
-
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     public static ShopFragment getInstance(Context context) {
         Bundle args = new Bundle();
@@ -54,6 +55,9 @@ public class ShopFragment extends AbstractTabFragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(LAYOUT, container, false);
         rv = (RecyclerView) view.findViewById(R.id.recyclerView);
+
+        swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipeRefreshLayout);
+        swipeRefreshLayout.setOnRefreshListener(this);
         rv.setLayoutManager(new LinearLayoutManager(context));
 
         getShopsData();
@@ -134,5 +138,12 @@ public class ShopFragment extends AbstractTabFragment {
             Log.i(TAG, "DATABASE IS EMPTY");
         }
         return null;
+    }
+
+
+    @Override
+    public void onRefresh() {
+        getShopsData();
+        swipeRefreshLayout.setRefreshing(false);
     }
 }
