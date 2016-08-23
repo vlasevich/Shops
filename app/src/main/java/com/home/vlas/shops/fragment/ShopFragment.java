@@ -11,11 +11,13 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.home.vlas.shops.R;
+import com.home.vlas.shops.adapter.ShopListAdapter;
 import com.home.vlas.shops.db.DataBaseHelper;
 import com.home.vlas.shops.model.Instrument;
 import com.home.vlas.shops.model.Shop;
 import com.home.vlas.shops.rest.ApiClient;
 import com.home.vlas.shops.rest.ApiInterface;
+import com.home.vlas.shops.utils.ConnectivityReceiver;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +29,7 @@ import retrofit2.Retrofit;
 
 public class ShopFragment extends AbstractTabFragment {
     public static final String BASE_URL = "http://aschoolapi.appspot.com/";
+    private static final String TAG = ShopFragment.class.getSimpleName();
     private static final int LAYOUT = R.layout.fragment_shop;
     private static Retrofit retrofit = null;
     public List<Shop> shopList = new ArrayList<>();
@@ -56,10 +59,6 @@ public class ShopFragment extends AbstractTabFragment {
 
         getShopsData();
 
-        //getInstrumentsArray();
-
-        //GET DATA FROM DB
-        //rv.setAdapter(new ShopListAdapter(showShopList()));
         return this.view;
 
     }
@@ -89,9 +88,13 @@ public class ShopFragment extends AbstractTabFragment {
 
     private void updateShopDB(List<Shop> list) {
         DataBaseHelper db = new DataBaseHelper(getContext());
-        for (Shop shop : list) {
-            Log.i("DB", shop.getName());
-            db.createShop(shop);
+        if (db.getAllShops().size() < list.size()) {
+            for (Shop shop : list) {
+                Log.i("DB", shop.getName());
+                db.createShop(shop);
+            }
+        } else {
+            Log.i(TAG, "NOT NEED TO UPDATE BD");
         }
     }
 
@@ -105,8 +108,12 @@ public class ShopFragment extends AbstractTabFragment {
 
     private void getShopsData() {
         if (checkConnection()) {
-            System.out.println("INTERNET");
-            List<Shop> shopList = getShopsDataFromWeb();
+            getShopsDataFromWeb();
+            //System.out.println("INTERNET");
+            //List<Shop> shopList = getShopsDataFromWeb();
+        } else {
+            shopList = getShopsDataFromDB();
+            rv.setAdapter(new ShopListAdapter(shopList));
         }
         //updateUI();
         //rv.setAdapter(new ShopListAdapter(shopList));
@@ -115,9 +122,8 @@ public class ShopFragment extends AbstractTabFragment {
 
     // Method to manually check connection status
     private boolean checkConnection() {
-        /*boolean isConnected = ConnectivityReceiver.isConnected();
-        return isConnected;*/
-        return true;
+        boolean isConnected = ConnectivityReceiver.isConnected();
+        return isConnected;
     }
 
     private List<Shop> getShopsDataFromWeb() {
@@ -130,8 +136,8 @@ public class ShopFragment extends AbstractTabFragment {
                 shopList = response.body();
                 System.out.println(shopList.size());
 
-                //rv.setAdapter(new ShopListAdapter(shopList));
-                //updateShopDB(shopList);
+                rv.setAdapter(new ShopListAdapter(shopList));
+                updateShopDB(shopList);
                 //showShopList();
             }
 
@@ -145,6 +151,11 @@ public class ShopFragment extends AbstractTabFragment {
 
     private List<Shop> getShopsDataFromDB() {
         DataBaseHelper db = new DataBaseHelper(getContext());
+        if (db.getAllShops().size() > 0) {
         return db.getAllShops();
+        } else {
+            Log.i(TAG, "DATABASE IS EMPTY");
+        }
+        return null;
     }
 }
