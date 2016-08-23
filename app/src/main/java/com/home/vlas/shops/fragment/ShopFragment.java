@@ -11,7 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.home.vlas.shops.R;
-import com.home.vlas.shops.adapter.ShopListAdapter;
 import com.home.vlas.shops.db.DataBaseHelper;
 import com.home.vlas.shops.model.Instrument;
 import com.home.vlas.shops.model.Shop;
@@ -105,9 +104,20 @@ public class ShopFragment extends AbstractTabFragment {
     }
 
     private void getShopsData() {
-        List<Shop> shopList = getShopsDataFromWeb();
-        rv.setAdapter(new ShopListAdapter(shopList));
+        if (checkConnection()) {
+            System.out.println("INTERNET");
+            List<Shop> shopList = getShopsDataFromWeb();
+        }
+        //updateUI();
+        //rv.setAdapter(new ShopListAdapter(shopList));
         //rv.setAdapter(new ShopListAdapter(getShopsDataFromDB()));
+    }
+
+    // Method to manually check connection status
+    private boolean checkConnection() {
+        /*boolean isConnected = ConnectivityReceiver.isConnected();
+        return isConnected;*/
+        return true;
     }
 
     private List<Shop> getShopsDataFromWeb() {
@@ -120,9 +130,9 @@ public class ShopFragment extends AbstractTabFragment {
                 shopList = response.body();
                 System.out.println(shopList.size());
 
-                rv.setAdapter(new ShopListAdapter(shopList));
+                //rv.setAdapter(new ShopListAdapter(shopList));
                 //updateShopDB(shopList);
-                showShopList();
+                //showShopList();
             }
 
             @Override
@@ -137,5 +147,4 @@ public class ShopFragment extends AbstractTabFragment {
         DataBaseHelper db = new DataBaseHelper(getContext());
         return db.getAllShops();
     }
-
 }

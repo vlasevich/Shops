@@ -11,8 +11,11 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import com.home.vlas.shops.adapter.TabsPagerFragmentAdapter;
+import com.home.vlas.shops.utils.ConnectivityReceiver;
+import com.home.vlas.shops.utils.ShopApplication;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity
+        implements ConnectivityReceiver.ConnectivityReceiverListener {
     private static final int LAYOUT = R.layout.main_activity;
     private Toolbar toolbar;
     private DrawerLayout drawerLayout;
@@ -27,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
         initNavigationView();
         initTabs();
 
+        checkConnection();
     }
 
     private void initToolbar() {
@@ -74,6 +78,31 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         });
+    }
+
+    @Override
+    public void onNetworkConnectionChanged(boolean isConnected) {
+        if (isConnected) {
+            System.out.println("CONNECTED");
+        } else {
+            System.out.println("NOT CONNECTED");
+        }
+    }
+
+    private void checkConnection() {
+        boolean isConnected = ConnectivityReceiver.isConnected();
+        if (isConnected) {
+            System.out.println("CONNECTED");
+        } else {
+            System.out.println("NOT CONNECTED");
+        }
+        //showSnack(isConnected);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        ShopApplication.getInstance().setConnectivityListener(this);
     }
 
     private void showNotificationTab() {
