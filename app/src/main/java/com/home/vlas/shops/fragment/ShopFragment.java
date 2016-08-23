@@ -13,7 +13,6 @@ import android.view.ViewGroup;
 import com.home.vlas.shops.R;
 import com.home.vlas.shops.adapter.ShopListAdapter;
 import com.home.vlas.shops.db.DataBaseHelper;
-import com.home.vlas.shops.model.Instrument;
 import com.home.vlas.shops.model.Shop;
 import com.home.vlas.shops.rest.ApiClient;
 import com.home.vlas.shops.rest.ApiInterface;
@@ -33,7 +32,7 @@ public class ShopFragment extends AbstractTabFragment {
     private static final int LAYOUT = R.layout.fragment_shop;
     private static Retrofit retrofit = null;
     public List<Shop> shopList = new ArrayList<>();
-    List<Instrument> instrumentList = new ArrayList<Instrument>();
+
     private RecyclerView rv;
 
 
@@ -63,28 +62,6 @@ public class ShopFragment extends AbstractTabFragment {
 
     }
 
-    private List<Instrument> getInstrumentsArray() {
-
-        ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
-        Call<List<Instrument>> call = apiInterface.getInstrument(1);
-        call.enqueue(new Callback<List<Instrument>>() {
-            @Override
-            public void onResponse(Call<List<Instrument>> call, Response<List<Instrument>> response) {
-                instrumentList = response.body();
-                System.out.println(instrumentList);
-                for (Instrument i : instrumentList) {
-                    //System.out.println(i.getInstrument().getBrand());
-                    //System.out.println(i.getQuantity());
-                }
-            }
-
-            @Override
-            public void onFailure(Call<List<Instrument>> call, Throwable t) {
-
-            }
-        });
-        return instrumentList;
-    }
 
     private void updateShopDB(List<Shop> list) {
         DataBaseHelper db = new DataBaseHelper(getContext());

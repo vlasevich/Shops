@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/instId"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:text="New Text" />
+
+    <TextView
+        android:id="@+id/instBrand"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/instModel"
+        android:layout_alignStart="@+id/instModel"
+        android:layout_below="@+id/instModel"
+        android:text="New Text" />
+
+    <TextView
+        android:id="@+id/instModel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/instQuantity"
+        android:layout_alignStart="@+id/instQuantity"
+        android:layout_below="@+id/instQuantity"
+        android:text="New Text" />
+
+    <TextView
+        android:id="@+id/instImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/instId"
+        android:text="New Text" />
+
+    <TextView
+        android:id="@+id/instType"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/instPrice"
+        android:text="New Text" />
+
+    <TextView
+        android:id="@+id/instPrice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/instImage"
+        android:text="New Text" />
+
+    <TextView
+        android:id="@+id/instQuantity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="85dp"
+        android:layout_marginStart="85dp"
+        android:layout_toEndOf="@+id/instId"
+        android:layout_toRightOf="@+id/instId"
+        android:text="New Text" />
+</RelativeLayout>
