@@ -23,6 +23,10 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.home.vlas.shops.R;
 import com.home.vlas.shops.db.DataBaseHelper;
 import com.home.vlas.shops.model.Instrument;
+import com.home.vlas.shops.model.Shop;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MapFragment extends AbstractTabFragment {
     private static final int LAYOUT = R.layout.fragment_map;
@@ -88,8 +92,9 @@ public class MapFragment extends AbstractTabFragment {
                         //CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(cameraPosition);
                         googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 
-                        googleMap.addMarker(new MarkerOptions().position(new LatLng(48.441928, 35.021000)).title("HOME")).showInfoWindow();
-                        //googleMap.addMarker(new MarkerOptions().position(new LatLng(48.448309, 35.025123)).title("NEW HOME")).showInfoWindow();
+                        for (MarkerOptions marker : getShopsLocations()) {
+                            googleMap.addMarker(marker).showInfoWindow();
+                        }
 
                         googleMap.getUiSettings().setZoomControlsEnabled(true);
                         googleMap.getUiSettings().setCompassEnabled(true);
@@ -118,6 +123,19 @@ public class MapFragment extends AbstractTabFragment {
             showCurrentLocation(googleMap);
         }
 
+    }
+
+    private List<MarkerOptions> getShopsLocations() {
+        db = new DataBaseHelper(getContext());
+        List<MarkerOptions> shopLocList = new ArrayList<>();
+        for (Shop shop : db.getAllShops()) {
+            shopLocList.add((new MarkerOptions().position(
+                    new LatLng(
+                            shop.getLocation().getMapLatitude(),
+                            shop.getLocation().getMapLongitude()))
+                    .title(shop.getName())));
+        }
+        return shopLocList;
     }
 
 

@@ -50,4 +50,12 @@ public class Location {
         return this;
     }
 
+    public double getMapLatitude() {
+        return ((double) latitude / 1_000_000);
+    }
+
+    public double getMapLongitude() {
+        return ((double) longitude / 1_000_000);
+    }
+
 }
