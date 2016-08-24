@@ -1,8 +1,11 @@
 package com.home.vlas.shops.activity;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -35,6 +38,7 @@ public class ShopActivity extends Activity {
         TextView shopAddress = (TextView) findViewById(R.id.shopAddress);
         TextView shopPhone = (TextView) findViewById(R.id.shopPhone);
         TextView shopWebsite = (TextView) findViewById(R.id.shopWebsite);
+        Button sendEmail = (Button) findViewById(R.id.sendEmailBtn);
 
         listView = (ListView) findViewById(R.id.listView);
 
@@ -43,6 +47,19 @@ public class ShopActivity extends Activity {
         String address = getIntent().getStringExtra("SHOP_ADDRESS");
         String phone = getIntent().getStringExtra("SHOP_PHONE");
         String website = getIntent().getStringExtra("SHOP_WEBSITE");
+
+        sendEmail.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Intent.ACTION_SEND);
+                intent.setType("text/plain");
+                intent.putExtra(Intent.EXTRA_EMAIL, "emailaddress@emailaddress.com");
+                intent.putExtra(Intent.EXTRA_SUBJECT, "Subject");
+                intent.putExtra(Intent.EXTRA_TEXT, "I'm email body.");
+
+                startActivity(Intent.createChooser(intent, "Send Email"));
+            }
+        });
 
         shopName.setText(name);
         shopAddress.setText(address);
