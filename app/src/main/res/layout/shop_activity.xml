@@ -38,12 +38,19 @@
         android:autoLink="web"
         android:text="New Text" />
 
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swipeRefreshLayoutInst"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/shopWebsite">
     <ListView
         android:id="@+id/listView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/shopWebsite"
         android:layout_centerHorizontal="true" />
+    </android.support.v4.widget.SwipeRefreshLayout>
+
 
     <Button
         android:id="@+id/sendEmailBtn"

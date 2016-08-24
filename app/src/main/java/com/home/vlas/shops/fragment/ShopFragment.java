@@ -83,6 +83,7 @@ public class ShopFragment extends AbstractTabFragment implements SwipeRefreshLay
             shopList = getShopsDataFromDB();
             rv.setAdapter(new ShopListAdapter(shopList));
         }
+        swipeRefreshLayout.setRefreshing(false);
     }
 
     // Method to manually check connection status
@@ -124,6 +125,5 @@ public class ShopFragment extends AbstractTabFragment implements SwipeRefreshLay
     @Override
     public void onRefresh() {
         getShopsData();
-        swipeRefreshLayout.setRefreshing(false);
     }
 }

@@ -3,6 +3,7 @@ package com.home.vlas.shops.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -26,12 +27,13 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ShopActivity extends Activity {
+public class ShopActivity extends Activity implements SwipeRefreshLayout.OnRefreshListener {
     private static final String TAG = ShopActivity.class.getSimpleName();
     private static final String TEST_IMAGE_URL = "https://defcon.ru/wp-content/uploads/2015/12/ico_android-3.png";
-    List<Instrument> instList = new ArrayList<>();
-    ListView listView;
-    long shopId;
+    private List<Instrument> instList = new ArrayList<>();
+    private ListView listView;
+    private long shopId;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +48,10 @@ public class ShopActivity extends Activity {
         ImageView image = (ImageView) findViewById(R.id.imageView);
 
         listView = (ListView) findViewById(R.id.listView);
+
+        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeRefreshLayoutInst);
+        swipeRefreshLayout.setOnRefreshListener(this);
+
 
         shopId = getIntent().getIntExtra("SHOP_ID", 0);
         String name = getIntent().getStringExtra("SHOP_NAME");
@@ -89,6 +95,7 @@ public class ShopActivity extends Activity {
             InstrumentsListAdapter adapter = new InstrumentsListAdapter(ShopActivity.this, instList);
             listView.setAdapter(adapter);
         }
+        swipeRefreshLayout.setRefreshing(false);
     }
 
     // Method to manually check connection status
@@ -140,5 +147,10 @@ public class ShopActivity extends Activity {
         } else {
             Log.i(TAG, "NOT NEED TO UPDATE BD");
         }
+    }
+
+    @Override
+    public void onRefresh() {
+        getInstData();
     }
 }
