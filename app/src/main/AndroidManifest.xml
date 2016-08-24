@@ -49,7 +49,11 @@
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
             android:value="AIzaSyDM3COb5WadwgFQi8DnILkkHB4N0EtGBPs" />
-
+        <provider
+            android:name=".db.ShopsProvider"
+            android:authorities="com.home.vlas.shops"
+            android:exported="true"
+            android:multiprocess="true"></provider>
     </application>
 
 

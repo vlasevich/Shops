@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 import com.home.vlas.shops.R;
 import com.home.vlas.shops.adapter.InstrumentsListAdapter;
-import com.home.vlas.shops.db.DataBaseHelper;
+import com.home.vlas.shops.db.DataBaseHelperOld;
 import com.home.vlas.shops.model.Instrument;
 import com.home.vlas.shops.rest.ApiClient;
 import com.home.vlas.shops.rest.ApiInterface;
@@ -98,7 +98,7 @@ public class ShopActivity extends Activity {
     }
 
     private List<Instrument> getDataFromBD() {
-        DataBaseHelper db = new DataBaseHelper(this.getApplicationContext());
+        DataBaseHelperOld db = new DataBaseHelperOld(this.getApplicationContext());
         if (db.getAllInstByShopId(shopId).size() > 0) {
             return db.getAllInstByShopId(shopId);
         } else {
@@ -136,7 +136,7 @@ public class ShopActivity extends Activity {
     }
 
     private void updateShopDB(List<Instrument> list) {
-        DataBaseHelper db = new DataBaseHelper(getApplicationContext());
+        DataBaseHelperOld db = new DataBaseHelperOld(getApplicationContext());
         if (db.getAllInstByShopId(shopId).size() < instList.size()) {
             for (Instrument inst : instList) {
                 // Log.i("DB", shop.getName());

@@ -14,8 +14,8 @@ import com.home.vlas.shops.model.Shop;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DataBaseHelper extends SQLiteOpenHelper {
-    private static final String TAG = DataBaseHelper.class.getSimpleName();
+public class DataBaseHelperOld extends SQLiteOpenHelper {
+    private static final String TAG = DataBaseHelperOld.class.getSimpleName();
     private static final int DATABASE_VERSION = 2;
     private static final String DATABASE_NAME = "ShopDatabase";
 
@@ -58,7 +58,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             + KEY_PRICE + " TEXT,"
             + KEY_QUANTITY + " TEXT);";
 
-    public DataBaseHelper(Context context) {
+    public DataBaseHelperOld(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 

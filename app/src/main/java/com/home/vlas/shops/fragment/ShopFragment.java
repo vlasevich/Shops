@@ -13,7 +13,7 @@ import android.view.ViewGroup;
 
 import com.home.vlas.shops.R;
 import com.home.vlas.shops.adapter.ShopListAdapter;
-import com.home.vlas.shops.db.DataBaseHelper;
+import com.home.vlas.shops.db.ShopsProvider;
 import com.home.vlas.shops.model.Shop;
 import com.home.vlas.shops.rest.ApiClient;
 import com.home.vlas.shops.rest.ApiInterface;
@@ -62,13 +62,14 @@ public class ShopFragment extends AbstractTabFragment implements SwipeRefreshLay
 
         getShopsData();
 
+
         return this.view;
 
     }
 
 
     private void updateShopDB(List<Shop> list) {
-        DataBaseHelper db = new DataBaseHelper(getContext());
+        ShopsProvider.DataBaseHelper db = new ShopsProvider.DataBaseHelper(getContext());
         if (db.getAllShops().size() < list.size()) {
             for (Shop shop : list) {
                 Log.i("DB", shop.getName());
@@ -80,7 +81,7 @@ public class ShopFragment extends AbstractTabFragment implements SwipeRefreshLay
     }
 
     private List<Shop> showShopList() {
-        DataBaseHelper db = new DataBaseHelper(getContext());
+        ShopsProvider.DataBaseHelper db = new ShopsProvider.DataBaseHelper(getContext());
         for (Shop shop : db.getAllShops()) {
             Log.i("DBS", "shop: " + shop.getAddress());
         }
@@ -131,7 +132,7 @@ public class ShopFragment extends AbstractTabFragment implements SwipeRefreshLay
     }
 
     private List<Shop> getShopsDataFromDB() {
-        DataBaseHelper db = new DataBaseHelper(getContext());
+        ShopsProvider.DataBaseHelper db = new ShopsProvider.DataBaseHelper(getContext());
         if (db.getAllShops().size() > 0) {
         return db.getAllShops();
         } else {

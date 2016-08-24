@@ -1,7 +1,9 @@
 package com.home.vlas.shops.fragment;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -21,7 +23,8 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.home.vlas.shops.R;
-import com.home.vlas.shops.db.DataBaseHelper;
+import com.home.vlas.shops.db.DataBaseHelperOld;
+import com.home.vlas.shops.db.ShopsProvider;
 import com.home.vlas.shops.model.Instrument;
 import com.home.vlas.shops.model.Shop;
 
@@ -29,9 +32,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MapFragment extends AbstractTabFragment {
-    private static final int LAYOUT = R.layout.fragment_map;
-    private static final String TAG = MapFragment.class.getSimpleName();
-    private DataBaseHelper db;
+    final int LAYOUT = R.layout.fragment_map;
+    final String TAG = MapFragment.class.getSimpleName();
+    private DataBaseHelperOld db;
     private SupportMapFragment mSupportMapFragment;
     private boolean firstInit = false;
 
@@ -63,6 +66,7 @@ public class MapFragment extends AbstractTabFragment {
             System.out.println("VISIBLE");
             //runBD();
             initMap();
+            addDataToDBTest();
             firstInit = true;
         } else {
             System.out.println("INVISIBLE");
@@ -126,7 +130,7 @@ public class MapFragment extends AbstractTabFragment {
     }
 
     private List<MarkerOptions> getShopsLocations() {
-        db = new DataBaseHelper(getContext());
+        db = new DataBaseHelperOld(getContext());
         List<MarkerOptions> shopLocList = new ArrayList<>();
         for (Shop shop : db.getAllShops()) {
             shopLocList.add((new MarkerOptions().position(
@@ -139,11 +143,42 @@ public class MapFragment extends AbstractTabFragment {
     }
 
 
+    public void addDataToDBTest() {
+        final String TABLE_SHOP = "shop";
+        final String TABLE_INSTRUMENT = "instrument";
+
+        final String KEY_SHOP_ID = "id";
+        final String KEY_NAME = "name";
+        final String KEY_ADDRESS = "address";
+        final String KEY_PHONE = "phone";
+        final String KEY_LATITUDE = "latitude";
+        final String KEY_LONGTITUDE = "longitude";
+
+        final String KEY_INST_PRI_KEY = "id";
+        final String KEY_SHOP_INST_ID = "shop_id";
+        final String KEY_INSTRUMENT_ID = "inst_id";
+        final String KEY_BRAND = "brand";
+        final String KEY_MODEL = "model";
+        final String KEY_IMAGEURL = "imageUrl";
+        final String KEY_TYPE = "type";
+        final String KEY_PRICE = "price";
+        final String KEY_QUANTITY = "quantity";
+        ContentValues values = new ContentValues();
+
+        values.put(KEY_SHOP_ID, 7);
+        values.put(KEY_NAME, "my shop name");
+        values.put(KEY_ADDRESS, "add");
+        values.put(KEY_PHONE, "3334334");
+        values.put(KEY_LATITUDE, "123123");
+        values.put(KEY_LONGTITUDE, "324324324");
+        Uri uri = getContext().getContentResolver().insert(ShopsProvider.CONTENT_URI, values);
+    }
+
     public void runBD() {
         System.out.println("=============");
         System.out.println("RUNBD() INST");
         System.out.println("=============");
-        db = new DataBaseHelper(getContext());
+        db = new DataBaseHelperOld(getContext());
 
         //DetailedInstrument detailedInstrument=new DetailedInstrument(1,"brand1","model1","image1","type1",1000.0);
         /*for (int i = 0; i < 5; i++) {
