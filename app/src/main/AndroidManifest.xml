@@ -2,9 +2,10 @@
     package="com.home.vlas.shops">
 
     <permission
-        android:name="info.androidhive.googlemapsv2.permission.MAPS_RECEIVE"
+        android:name="com.home.vlas.shops.permission.MAPS_RECEIVE"
         android:protectionLevel="signature" />
 
+    <uses-permission android:name="com.home.vlas.shops.permission.MAPS_RECEIVE" />
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 

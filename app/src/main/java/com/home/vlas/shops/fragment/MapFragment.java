@@ -1,16 +1,18 @@
 package com.home.vlas.shops.fragment;
 
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -27,6 +29,7 @@ public class MapFragment extends AbstractTabFragment {
     private static final String TAG = MapFragment.class.getSimpleName();
     private DataBaseHelper db;
     private SupportMapFragment mSupportMapFragment;
+    private boolean firstInit = false;
 
     public static MapFragment getInstance(Context context) {
         Bundle args = new Bundle();
@@ -45,46 +48,6 @@ public class MapFragment extends AbstractTabFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(LAYOUT, container, false);
-        if (true) {
-            Log.i(TAG, "RUN");
-            runBD();
-
-            mSupportMapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.mapwhere);
-            if (mSupportMapFragment == null) {
-                FragmentManager fragmentManager = getFragmentManager();
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                mSupportMapFragment = SupportMapFragment.newInstance();
-                fragmentTransaction.replace(R.id.mapwhere, mSupportMapFragment).commit();
-            }
-
-            if (mSupportMapFragment != null) {
-                mSupportMapFragment.getMapAsync(new OnMapReadyCallback() {
-                    @Override
-                    public void onMapReady(GoogleMap googleMap) {
-                        if (googleMap != null) {
-
-                            googleMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
-                            googleMap.getUiSettings().setAllGesturesEnabled(true);
-
-                            //-> marker_latlng // MAKE THIS WHATEVER YOU WANT
-
-                            CameraPosition cameraPosition = new CameraPosition.Builder().target(new LatLng(17.385044, 78.486671)).zoom(15.0f).build();
-                            CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(cameraPosition);
-
-                            googleMap.addMarker(new MarkerOptions().position(new LatLng(48.441928, 35.021000)).title("HOME")).showInfoWindow();
-                            googleMap.addMarker(new MarkerOptions().position(new LatLng(48.448309, 35.025123)).title("NEW HOME")).showInfoWindow();
-
-                            googleMap.moveCamera(cameraUpdate);
-                            //48.441928, 35.021000
-
-                        }
-
-                    }
-                });
-            }
-        } else {
-            Log.i(TAG, "NOT RUN");
-        }
         return this.view;
 
     }
@@ -92,13 +55,71 @@ public class MapFragment extends AbstractTabFragment {
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
-        if (isVisibleToUser) {
+        if (isVisibleToUser && !firstInit) {
             System.out.println("VISIBLE");
-            runBD();
+            //runBD();
+            initMap();
+            firstInit = true;
         } else {
             System.out.println("INVISIBLE");
         }
     }
+
+    private void initMap() {
+        Log.i(TAG, "Map init");
+        mSupportMapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.mapwhere);
+        if (mSupportMapFragment == null) {
+            FragmentManager fragmentManager = getFragmentManager();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            mSupportMapFragment = SupportMapFragment.newInstance();
+            fragmentTransaction.replace(R.id.mapwhere, mSupportMapFragment).commit();
+        }
+
+        if (mSupportMapFragment != null) {
+            mSupportMapFragment.getMapAsync(new OnMapReadyCallback() {
+                @Override
+                public void onMapReady(GoogleMap googleMap) {
+                    if (googleMap != null) {
+
+                        googleMap.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
+                        googleMap.getUiSettings().setAllGesturesEnabled(true);
+
+                        CameraPosition cameraPosition = new CameraPosition.Builder().target(new LatLng(48.464095, 35.045630)).zoom(15.0f).build();
+                        //CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(cameraPosition);
+                        googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+
+                        googleMap.addMarker(new MarkerOptions().position(new LatLng(48.441928, 35.021000)).title("HOME")).showInfoWindow();
+                        //googleMap.addMarker(new MarkerOptions().position(new LatLng(48.448309, 35.025123)).title("NEW HOME")).showInfoWindow();
+
+                        googleMap.getUiSettings().setZoomControlsEnabled(true);
+                        googleMap.getUiSettings().setCompassEnabled(true);
+
+                        showCurrentLocation(googleMap);
+
+
+                    }
+
+                }
+            });
+        }
+    }
+
+    public void showCurrentLocation(GoogleMap googleMap) {
+        if (ContextCompat.checkSelfPermission(getContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) ==
+                PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(getContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) ==
+                        PackageManager.PERMISSION_GRANTED) {
+            googleMap.setMyLocationEnabled(true);
+            googleMap.getUiSettings().setMyLocationButtonEnabled(true);
+        } else {
+            ActivityCompat.requestPermissions(getActivity(), new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 0);
+            ActivityCompat.requestPermissions(getActivity(), new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
+
+            showCurrentLocation(googleMap);
+        }
+
+    }
+
 
     public void runBD() {
         System.out.println("=============");
