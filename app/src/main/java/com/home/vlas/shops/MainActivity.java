@@ -17,7 +17,6 @@ import com.home.vlas.shops.utils.ShopApplication;
 public class MainActivity extends AppCompatActivity
         implements ConnectivityReceiver.ConnectivityReceiverListener {
     private static final int LAYOUT = R.layout.main_activity;
-    private Toolbar toolbar;
     private DrawerLayout drawerLayout;
     private ViewPager viewPager;
 
@@ -34,7 +33,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void initToolbar() {
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(R.string.app_name);
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
@@ -96,7 +95,6 @@ public class MainActivity extends AppCompatActivity
         } else {
             System.out.println("NOT CONNECTED");
         }
-        //showSnack(isConnected);
     }
 
     @Override

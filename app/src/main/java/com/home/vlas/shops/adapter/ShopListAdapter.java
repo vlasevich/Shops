@@ -34,7 +34,9 @@ public class ShopListAdapter extends RecyclerView.Adapter<ShopListAdapter.Remind
 
     @Override
     public int getItemCount() {
+        if (data != null) {
         return data.size();
+        } else return 0;
     }
 
     public static class RemindViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {

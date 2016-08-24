@@ -25,13 +25,10 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
 
 public class ShopFragment extends AbstractTabFragment implements SwipeRefreshLayout.OnRefreshListener {
-    public static final String BASE_URL = "http://aschoolapi.appspot.com/";
     private static final String TAG = ShopFragment.class.getSimpleName();
     private static final int LAYOUT = R.layout.fragment_shop;
-    private static Retrofit retrofit = null;
     public List<Shop> shopList = new ArrayList<>();
 
     private RecyclerView rv;
@@ -62,44 +59,30 @@ public class ShopFragment extends AbstractTabFragment implements SwipeRefreshLay
 
         getShopsData();
 
-
         return this.view;
 
     }
 
-
     private void updateShopDB(List<Shop> list) {
         ShopsProvider.DataBaseHelper db = new ShopsProvider.DataBaseHelper(getContext());
         if (db.getAllShops().size() < list.size()) {
-            for (Shop shop : list) {
-                Log.i("DB", shop.getName());
-                db.createShop(shop);
+            int c = list.size() - db.getAllShops().size();
+            for (int i = list.size(); i > list.size() - c; i--) {
+                db.createShop(list.get(i));
             }
         } else {
             Log.i(TAG, "NOT NEED TO UPDATE BD");
         }
     }
 
-    private List<Shop> showShopList() {
-        ShopsProvider.DataBaseHelper db = new ShopsProvider.DataBaseHelper(getContext());
-        for (Shop shop : db.getAllShops()) {
-            Log.i("DBS", "shop: " + shop.getAddress());
-        }
-        return db.getAllShops();
-    }
 
     private void getShopsData() {
         if (checkConnection()) {
             getShopsDataFromWeb();
-            //System.out.println("INTERNET");
-            //List<Shop> shopList = getShopsDataFromWeb();
         } else {
             shopList = getShopsDataFromDB();
             rv.setAdapter(new ShopListAdapter(shopList));
         }
-        //updateUI();
-        //rv.setAdapter(new ShopListAdapter(shopList));
-        //rv.setAdapter(new ShopListAdapter(getShopsDataFromDB()));
     }
 
     // Method to manually check connection status
@@ -109,18 +92,14 @@ public class ShopFragment extends AbstractTabFragment implements SwipeRefreshLay
     }
 
     private List<Shop> getShopsDataFromWeb() {
-        Log.i("TAG", "----====START====----");
         ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
         Call<List<Shop>> call = apiService.getShops();
         call.enqueue(new Callback<List<Shop>>() {
             @Override
             public void onResponse(Call<List<Shop>> call, Response<List<Shop>> response) {
                 shopList = response.body();
-                System.out.println(shopList.size());
-
                 rv.setAdapter(new ShopListAdapter(shopList));
                 updateShopDB(shopList);
-                //showShopList();
             }
 
             @Override

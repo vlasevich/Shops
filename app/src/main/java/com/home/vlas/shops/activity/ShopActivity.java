@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 import com.home.vlas.shops.R;
 import com.home.vlas.shops.adapter.InstrumentsListAdapter;
-import com.home.vlas.shops.db.DataBaseHelperOld;
+import com.home.vlas.shops.db.ShopsProvider;
 import com.home.vlas.shops.model.Instrument;
 import com.home.vlas.shops.rest.ApiClient;
 import com.home.vlas.shops.rest.ApiInterface;
@@ -93,12 +93,11 @@ public class ShopActivity extends Activity {
 
     // Method to manually check connection status
     private boolean checkConnection() {
-        boolean isConnected = ConnectivityReceiver.isConnected();
-        return isConnected;
+        return ConnectivityReceiver.isConnected();
     }
 
     private List<Instrument> getDataFromBD() {
-        DataBaseHelperOld db = new DataBaseHelperOld(this.getApplicationContext());
+        ShopsProvider.DataBaseHelper db = new ShopsProvider.DataBaseHelper(this.getApplicationContext());
         if (db.getAllInstByShopId(shopId).size() > 0) {
             return db.getAllInstByShopId(shopId);
         } else {
@@ -115,33 +114,27 @@ public class ShopActivity extends Activity {
             @Override
             public void onResponse(Call<List<Instrument>> call, Response<List<Instrument>> response) {
                 instList = response.body();
-                System.out.println(instList);
-                for (Instrument i : instList) {
-                    System.out.println(i.getInstrument().getBrand());
-                    System.out.println(i.getQuantity());
-                }
+
                 updateShopDB(instList);
 
                 InstrumentsListAdapter adapter = new InstrumentsListAdapter(ShopActivity.this, instList);
                 listView.setAdapter(adapter);
-
             }
 
             @Override
             public void onFailure(Call<List<Instrument>> call, Throwable t) {
-
             }
         });
         return instList;
     }
 
     private void updateShopDB(List<Instrument> list) {
-        DataBaseHelperOld db = new DataBaseHelperOld(getApplicationContext());
-        if (db.getAllInstByShopId(shopId).size() < instList.size()) {
-            for (Instrument inst : instList) {
-                // Log.i("DB", shop.getName());
-                // db.createShop(shop);
-                db.createInstrument(shopId, inst);
+        ShopsProvider.DataBaseHelper db = new ShopsProvider.DataBaseHelper(getApplicationContext());
+        if (db.getAllInstByShopId(shopId).size() < list.size()) {
+
+            int c = list.size() - db.getAllInstByShopId(shopId).size();
+            for (int i = list.size(); i > list.size() - c; i--) {
+                db.createInstrument(shopId, list.get(i));
             }
             Log.i(TAG, "WRITE TO DB ALL INSTs");
         } else {
