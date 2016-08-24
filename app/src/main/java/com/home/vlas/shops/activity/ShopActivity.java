@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -16,6 +17,7 @@ import com.home.vlas.shops.model.Instrument;
 import com.home.vlas.shops.rest.ApiClient;
 import com.home.vlas.shops.rest.ApiInterface;
 import com.home.vlas.shops.utils.ConnectivityReceiver;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,9 +28,11 @@ import retrofit2.Response;
 
 public class ShopActivity extends Activity {
     private static final String TAG = ShopActivity.class.getSimpleName();
+    private static final String TEST_IMAGE_URL = "https://defcon.ru/wp-content/uploads/2015/12/ico_android-3.png";
     List<Instrument> instList = new ArrayList<>();
     ListView listView;
     long shopId;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,6 +43,7 @@ public class ShopActivity extends Activity {
         TextView shopPhone = (TextView) findViewById(R.id.shopPhone);
         TextView shopWebsite = (TextView) findViewById(R.id.shopWebsite);
         Button sendEmail = (Button) findViewById(R.id.sendEmailBtn);
+        ImageView image = (ImageView) findViewById(R.id.imageView);
 
         listView = (ListView) findViewById(R.id.listView);
 
@@ -47,6 +52,11 @@ public class ShopActivity extends Activity {
         String address = getIntent().getStringExtra("SHOP_ADDRESS");
         String phone = getIntent().getStringExtra("SHOP_PHONE");
         String website = getIntent().getStringExtra("SHOP_WEBSITE");
+
+        Picasso.with(getApplicationContext())
+                .load(TEST_IMAGE_URL)
+                .placeholder(R.mipmap.ic_launcher)
+                .into(image);
 
         sendEmail.setOnClickListener(new View.OnClickListener() {
             @Override
