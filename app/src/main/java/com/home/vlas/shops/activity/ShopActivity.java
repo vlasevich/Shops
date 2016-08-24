@@ -139,8 +139,8 @@ public class ShopActivity extends Activity implements SwipeRefreshLayout.OnRefre
         ShopsProvider.DataBaseHelper db = new ShopsProvider.DataBaseHelper(getApplicationContext());
         if (db.getAllInstByShopId(shopId).size() < list.size()) {
 
-            int c = list.size() - db.getAllInstByShopId(shopId).size();
-            for (int i = list.size() - 1; i > list.size() - c; i--) {
+            int dif = list.size() - db.getAllInstByShopId(shopId).size();
+            for (int i = list.size() - 1; i > list.size() - dif; i--) {
                 db.createInstrument(shopId, list.get(i));
             }
             Log.i(TAG, "WRITE TO DB ALL INSTs");

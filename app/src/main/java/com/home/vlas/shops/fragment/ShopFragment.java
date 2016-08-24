@@ -66,8 +66,8 @@ public class ShopFragment extends AbstractTabFragment implements SwipeRefreshLay
     private void updateShopDB(List<Shop> list) {
         ShopsProvider.DataBaseHelper db = new ShopsProvider.DataBaseHelper(getContext());
         if (db.getAllShops().size() < list.size()) {
-            int c = list.size() - db.getAllShops().size();
-            for (int i = list.size() - 1; i > list.size() - c; i--) {
+            int dif = list.size() - db.getAllShops().size();
+            for (int i = list.size() - 1; i > list.size() - dif; i--) {
                 db.createShop(list.get(i));
             }
         } else {
