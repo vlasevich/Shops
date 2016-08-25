@@ -116,7 +116,9 @@ public class ShopActivity extends Activity implements SwipeRefreshLayout.OnRefre
     private List<Instrument> getDataFromBD() {
         ShopsProvider.DataBaseHelper db = new ShopsProvider.DataBaseHelper(this.getApplicationContext());
         if (db.getAllInstByShopId(shopId).size() > 0) {
-            return db.getAllInstByShopId(shopId);
+            List<Instrument> list = db.getAllInstByShopId(shopId);
+            Collections.reverse(list);
+            return list;
         } else {
             Log.i(TAG, "database is empty");
             Toast.makeText(getApplicationContext(), "no data", Toast.LENGTH_SHORT).show();
