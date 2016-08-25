@@ -53,17 +53,15 @@ public class MapFragment extends AbstractTabFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(LAYOUT, container, false);
-
         return this.view;
-
     }
 
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
         if (isVisibleToUser) {
+            //start to init map only if fragment is visible
             initMap();
-
         }
     }
 
@@ -82,24 +80,23 @@ public class MapFragment extends AbstractTabFragment {
                 @Override
                 public void onMapReady(GoogleMap googleMap) {
                     if (googleMap != null) {
-
+                        //set map settings
                         googleMap.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
                         googleMap.getUiSettings().setAllGesturesEnabled(true);
-
+                        //set start camera position
                         CameraPosition cameraPosition = new CameraPosition.Builder().target(new LatLng(LATITUDE, LONGITUDE)).zoom(ZOOM).build();
                         //CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(cameraPosition);
+                        //smooth animation to some place
                         googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 
                         for (MarkerOptions marker : getShopsLocations()) {
                             googleMap.addMarker(marker).showInfoWindow();
                         }
-
+                        //enable compass and zoomControls
                         googleMap.getUiSettings().setZoomControlsEnabled(true);
                         googleMap.getUiSettings().setCompassEnabled(true);
 
                         showCurrentLocation(googleMap);
-
-
                     }
 
                 }
@@ -108,6 +105,7 @@ public class MapFragment extends AbstractTabFragment {
     }
 
     public void showCurrentLocation(GoogleMap googleMap) {
+        //check permissions
         if (ContextCompat.checkSelfPermission(getContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) ==
                 PackageManager.PERMISSION_GRANTED &&
                 ContextCompat.checkSelfPermission(getContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) ==
@@ -115,6 +113,7 @@ public class MapFragment extends AbstractTabFragment {
             googleMap.setMyLocationEnabled(true);
             googleMap.getUiSettings().setMyLocationButtonEnabled(true);
         } else {
+            //ask user for permissions
             ActivityCompat.requestPermissions(getActivity(), new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 0);
             ActivityCompat.requestPermissions(getActivity(), new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
 
@@ -124,6 +123,7 @@ public class MapFragment extends AbstractTabFragment {
     }
 
     private List<MarkerOptions> getShopsLocations() {
+        //get list of all shop's locations
         ShopsProvider.DataBaseHelper db = new ShopsProvider.DataBaseHelper(getContext());
         List<MarkerOptions> shopLocList = new ArrayList<>();
         for (Shop shop : db.getAllShops()) {
@@ -133,6 +133,7 @@ public class MapFragment extends AbstractTabFragment {
                             shop.getLocation().getMapLongitude()))
                     .title(shop.getName())));
         }
+        db.closeBD();
         return shopLocList;
     }
 

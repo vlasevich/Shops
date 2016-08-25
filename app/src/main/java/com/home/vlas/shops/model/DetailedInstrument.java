@@ -52,10 +52,6 @@ public class DetailedInstrument {
         this.id = id;
     }
 
-    public DetailedInstrument withId(Integer id) {
-        this.id = id;
-        return this;
-    }
 
     public String getBrand() {
         return brand;
@@ -65,10 +61,6 @@ public class DetailedInstrument {
         this.brand = brand;
     }
 
-    public DetailedInstrument withBrand(String brand) {
-        this.brand = brand;
-        return this;
-    }
 
     public String getModel() {
         return model;
@@ -76,11 +68,6 @@ public class DetailedInstrument {
 
     public void setModel(String model) {
         this.model = model;
-    }
-
-    public DetailedInstrument withModel(String model) {
-        this.model = model;
-        return this;
     }
 
     public String getImageUrl() {
@@ -91,11 +78,6 @@ public class DetailedInstrument {
         this.imageUrl = imageUrl;
     }
 
-    public DetailedInstrument withImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
-        return this;
-    }
-
     public String getType() {
         return type;
     }
@@ -104,22 +86,12 @@ public class DetailedInstrument {
         this.type = type;
     }
 
-    public DetailedInstrument withType(String type) {
-        this.type = type;
-        return this;
-    }
-
     public Double getPrice() {
         return price;
     }
 
     public void setPrice(Double price) {
         this.price = price;
-    }
-
-    public DetailedInstrument withPrice(Double price) {
-        this.price = price;
-        return this;
     }
 
 }

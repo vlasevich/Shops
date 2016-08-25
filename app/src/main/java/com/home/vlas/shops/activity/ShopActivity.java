@@ -54,18 +54,18 @@ public class ShopActivity extends Activity implements SwipeRefreshLayout.OnRefre
         swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeRefreshLayoutInst);
         swipeRefreshLayout.setOnRefreshListener(this);
 
-
+        //get data about shop
         shopId = getIntent().getIntExtra("SHOP_ID", 0);
         String name = getIntent().getStringExtra("SHOP_NAME");
         String address = getIntent().getStringExtra("SHOP_ADDRESS");
         String phone = getIntent().getStringExtra("SHOP_PHONE");
         String website = getIntent().getStringExtra("SHOP_WEBSITE");
-
+        //show test image from web by Picasso because shop's image field is always empty
         Picasso.with(getApplicationContext())
                 .load(TEST_IMAGE_URL)
                 .placeholder(R.mipmap.ic_launcher)
                 .into(image);
-
+        // add simple button to send email, but shops again do not have emails
         sendEmail.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -87,7 +87,9 @@ public class ShopActivity extends Activity implements SwipeRefreshLayout.OnRefre
         getInstData();
     }
 
+    // get data from web or from db
     private void getInstData() {
+        //check internet connection
         if (checkConnection()) {
             Log.i(TAG, "read data from web");
             getInstDataFromWeb(shopId);
@@ -97,9 +99,11 @@ public class ShopActivity extends Activity implements SwipeRefreshLayout.OnRefre
             if (instList != null) {
                 Collections.reverse(instList);
             }
+            //add list of shops to adapter
             InstrumentsListAdapter adapter = new InstrumentsListAdapter(ShopActivity.this, instList);
             listView.setAdapter(adapter);
         }
+        //stop show refreshing
         swipeRefreshLayout.setRefreshing(false);
     }
 
@@ -108,6 +112,7 @@ public class ShopActivity extends Activity implements SwipeRefreshLayout.OnRefre
         return ConnectivityReceiver.isConnected();
     }
 
+    //get data from db if there is no internet connection
     private List<Instrument> getDataFromBD() {
         ShopsProvider.DataBaseHelper db = new ShopsProvider.DataBaseHelper(this.getApplicationContext());
         if (db.getAllInstByShopId(shopId).size() > 0) {
@@ -120,37 +125,39 @@ public class ShopActivity extends Activity implements SwipeRefreshLayout.OnRefre
         return null;
     }
 
+    //get data from web using Retrofit
     private List<Instrument> getInstDataFromWeb(long shopId) {
-
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
         Call<List<Instrument>> call = apiInterface.getInstrument((int) shopId);
         call.enqueue(new Callback<List<Instrument>>() {
             @Override
             public void onResponse(Call<List<Instrument>> call, Response<List<Instrument>> response) {
+                //insert data to list
                 instList = response.body();
-
+                //update db
                 updateShopDB(instList);
-
+                //add our list to adapter
                 InstrumentsListAdapter adapter = new InstrumentsListAdapter(ShopActivity.this, instList);
                 listView.setAdapter(adapter);
             }
 
             @Override
             public void onFailure(Call<List<Instrument>> call, Throwable t) {
+                Log.e(TAG, "some problems with getting data from web");
             }
         });
         return instList;
     }
 
+    //update db if it gets new data
     private void updateShopDB(List<Instrument> list) {
         ShopsProvider.DataBaseHelper db = new ShopsProvider.DataBaseHelper(getApplicationContext());
         if (db.getAllInstByShopId(shopId).size() < list.size()) {
-
-            int dif = list.size() - db.getAllInstByShopId(shopId).size();
-            for (int i = list.size() - 1; i > list.size() - dif; i--) {
+            int instListSize = db.getAllInstByShopId(shopId).size();
+            for (int i = instListSize; i < list.size(); i++) {
                 db.createInstrument(shopId, list.get(i));
             }
-            Log.i(TAG, "insert to db insts");
+            Log.i(TAG, "insert to db instruments");
         } else {
             Log.i(TAG, "not need to update db");
         }
@@ -159,6 +166,7 @@ public class ShopActivity extends Activity implements SwipeRefreshLayout.OnRefre
 
     @Override
     public void onRefresh() {
+        //refresh data on swipe
         getInstData();
     }
 }

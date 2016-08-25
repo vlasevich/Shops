@@ -52,6 +52,7 @@ public class ShopListAdapter extends RecyclerView.Adapter<ShopListAdapter.Remind
         }
 
         private void openShopActivity(View view, int position) {
+            //push intent with shop's data to activity
             Intent myIntent = new Intent(view.getContext(), ShopActivity.class);
             myIntent.putExtra("SHOP_ID", position);
             myIntent.putExtra("SHOP_NAME", data.get(position).getName());
@@ -63,8 +64,6 @@ public class ShopListAdapter extends RecyclerView.Adapter<ShopListAdapter.Remind
 
         @Override
         public void onClick(View view) {
-            System.out.println(getAdapterPosition());
-            System.out.println(data.get(getAdapterPosition()).getWebsite());
             openShopActivity(view, getAdapterPosition());
         }
     }

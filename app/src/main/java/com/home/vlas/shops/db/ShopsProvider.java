@@ -130,6 +130,7 @@ public class ShopsProvider extends ContentProvider {
     @Nullable
     @Override
     public Uri insert(Uri uri, ContentValues values) {
+        //insert shop row to table
         long rowID = db.insert(TABLE_SHOP, "", values);
         if (rowID > 0) {
             Uri _uri = ContentUris.withAppendedId(CONTENT_URI, rowID);
@@ -193,6 +194,7 @@ public class ShopsProvider extends ContentProvider {
         }
 
         public long createShop(Shop shop) {
+            //add shop row to table
             SQLiteDatabase db = this.getWritableDatabase();
             ContentValues values = new ContentValues();
             values.put(KEY_SHOP_ID, shop.getId());
@@ -206,6 +208,7 @@ public class ShopsProvider extends ContentProvider {
         }
 
         public void createShopV2(Context context,Shop shop){
+            //insert shop row to table by content provider
             ContentValues values=new ContentValues();
             values.put(KEY_SHOP_ID, shop.getId());
             values.put(KEY_NAME, shop.getName());
@@ -217,6 +220,7 @@ public class ShopsProvider extends ContentProvider {
         }
 
         public Shop getShop(long shopId) {
+            //get shop from table by shop's id
             SQLiteDatabase db = this.getWritableDatabase();
             String selectQuery = "SELECT * FROM " + TABLE_SHOP
                     + " WHERE " + KEY_SHOP_ID + " = " + shopId;
@@ -241,6 +245,7 @@ public class ShopsProvider extends ContentProvider {
         }
 
         public List<Shop> getAllShops() {
+            //get list of shops from table
             List<Shop> shopList = new ArrayList<>();
             String selectQuery = "SELECT * FROM " + TABLE_SHOP;
             SQLiteDatabase db = this.getReadableDatabase();
@@ -265,6 +270,7 @@ public class ShopsProvider extends ContentProvider {
         }
 
         public int getShopCount() {
+            //get count of shops in table
             String countQuery = "SELECT * FROM " + TABLE_SHOP;
             SQLiteDatabase db = this.getReadableDatabase();
             Cursor c = db.rawQuery(countQuery, null);
@@ -275,6 +281,7 @@ public class ShopsProvider extends ContentProvider {
         }
 
         public int updateShop(Shop shop) {
+            //update shop row in table
             SQLiteDatabase db = this.getWritableDatabase();
             ContentValues values = new ContentValues();
 
@@ -289,11 +296,13 @@ public class ShopsProvider extends ContentProvider {
         }
 
         public void deleteShop(long shopId) {
+            //delete shop row in table
             SQLiteDatabase db = this.getWritableDatabase();
             db.delete(TABLE_SHOP, KEY_SHOP_ID + "=?", new String[]{String.valueOf(shopId)});
         }
 
         public long createInstrument(long shopId, Instrument inst) {
+            //insert instrument to table
             SQLiteDatabase db = this.getWritableDatabase();
             ContentValues values = new ContentValues();
             values.put(KEY_SHOP_INST_ID, shopId);
@@ -309,6 +318,7 @@ public class ShopsProvider extends ContentProvider {
         }
 
         public List<Instrument> getAllInstruments() {
+            //get list of all instruments in table
             List<Instrument> instList = new ArrayList<>();
             String selectQuery = "SELECT * FROM " + TABLE_INSTRUMENT;
             SQLiteDatabase db = this.getReadableDatabase();
@@ -333,6 +343,7 @@ public class ShopsProvider extends ContentProvider {
         }
 
         public List<Instrument> getAllInstByShopId(long shopId) {
+            // get list of instruments connected to shop with id
             List<Instrument> instList = new ArrayList<>();
             String selectQuery = "SELECT * FROM " + TABLE_INSTRUMENT
                     + " WHERE " + KEY_SHOP_INST_ID + " = " + shopId;
@@ -359,16 +370,19 @@ public class ShopsProvider extends ContentProvider {
         }
 
         public void deleteInstrument(long instId) {
+            //delete instrument in table
             SQLiteDatabase db = this.getWritableDatabase();
             db.delete(TABLE_INSTRUMENT, KEY_INSTRUMENT_ID + "=?", new String[]{String.valueOf(instId)});
         }
 
         public void deleteInstById(int id) {
+            //delete instrument in table by it's id
             SQLiteDatabase db = this.getWritableDatabase();
             db.delete(TABLE_INSTRUMENT, KEY_INSTRUMENT_ID + "=" + id, null);
         }
 
         public int updateInstrument(Instrument inst) {
+            //update instrument in table
             SQLiteDatabase db = this.getWritableDatabase();
             ContentValues values = new ContentValues();
 
@@ -384,6 +398,7 @@ public class ShopsProvider extends ContentProvider {
         }
 
         public void closeBD() {
+            //close database
             SQLiteDatabase db = this.getReadableDatabase();
             if (db != null && db.isOpen()) {
                 db.close();

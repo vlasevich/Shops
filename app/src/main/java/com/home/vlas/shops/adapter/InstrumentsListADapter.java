@@ -6,10 +6,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.home.vlas.shops.R;
 import com.home.vlas.shops.model.Instrument;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +32,6 @@ public class InstrumentsListAdapter extends BaseAdapter {
         return instList.size();
         } else
             return 0;
-
     }
 
     @Override
@@ -52,14 +53,11 @@ public class InstrumentsListAdapter extends BaseAdapter {
         if (view == null) {
             view = layoutInflater.inflate(R.layout.inst_list_row, null);
         }
-/*        if (imageLoader == null) {
-            imageLoader = AppController.getInstance().getImageLoader();
-        }*/
 
         TextView id = (TextView) view.findViewById(R.id.instId);
         TextView brand = (TextView) view.findViewById(R.id.instBrand);
         TextView model = (TextView) view.findViewById(R.id.instModel);
-        TextView image = (TextView) view.findViewById(R.id.instImage);
+        ImageView instImg = (ImageView) view.findViewById(R.id.instImg);
         TextView type = (TextView) view.findViewById(R.id.instType);
         TextView price = (TextView) view.findViewById(R.id.instPrice);
         TextView quantity = (TextView) view.findViewById(R.id.instQuantity);
@@ -70,11 +68,17 @@ public class InstrumentsListAdapter extends BaseAdapter {
         id.setText(inst.getInstrument().getId().toString());
         brand.setText(inst.getInstrument().getModel());
         model.setText(inst.getInstrument().getBrand());
-        image.setText(inst.getInstrument().getImageUrl());
+        //image.setText(inst.getInstrument().getImageUrl());
         type.setText(inst.getInstrument().getType());
         price.setText(inst.getInstrument().getPrice().toString());
         quantity.setText(inst.getQuantity().toString());
 
+        if (!inst.getInstrument().getImageUrl().isEmpty()) {
+            Picasso.with(view.getContext())
+                    .load(inst.getInstrument().getImageUrl())
+                    .placeholder(R.mipmap.ic_launcher)
+                    .into(instImg);
+        }
         return view;
     }
 }

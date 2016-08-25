@@ -53,7 +53,7 @@ public class ShopFragment extends AbstractTabFragment implements SwipeRefreshLay
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(LAYOUT, container, false);
         rv = (RecyclerView) view.findViewById(R.id.recyclerView);
-
+        //add swipe refreshing
         swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipeRefreshLayout);
         swipeRefreshLayout.setOnRefreshListener(this);
         rv.setLayoutManager(new LinearLayoutManager(context));
@@ -61,16 +61,16 @@ public class ShopFragment extends AbstractTabFragment implements SwipeRefreshLay
         getShopsData();
 
         return this.view;
-
     }
 
     private void updateShopDB(List<Shop> list) {
+        //update database with new shops
         ShopsProvider.DataBaseHelper db = new ShopsProvider.DataBaseHelper(getContext());
         if (db.getAllShops().size() < list.size()) {
-            int dif = list.size() - db.getAllShops().size();
-            for (int i = list.size() - 1; i > list.size() - dif; i--) {
+            int dbListSize = db.getAllShops().size();
+            for (int i = dbListSize; i < list.size(); i++) {
                 // another method
-                // db.createShop(list.get(i));
+                //db.createShop(list.get(i));
                 db.createShopV2(getContext(), list.get(i));
             }
         } else {
@@ -81,6 +81,8 @@ public class ShopFragment extends AbstractTabFragment implements SwipeRefreshLay
 
 
     private void getShopsData() {
+        //get shops data from web or database
+        //check internet connection
         if (checkConnection()) {
             getShopsDataFromWeb();
         } else {
@@ -97,25 +99,30 @@ public class ShopFragment extends AbstractTabFragment implements SwipeRefreshLay
     }
 
     private List<Shop> getShopsDataFromWeb() {
+        //get list of shops from web using Retrofit
         ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
         Call<List<Shop>> call = apiService.getShops();
         call.enqueue(new Callback<List<Shop>>() {
             @Override
             public void onResponse(Call<List<Shop>> call, Response<List<Shop>> response) {
                 shopList = response.body();
+                //set shop data to adapter
                 rv.setAdapter(new ShopListAdapter(shopList));
+                //and update database
                 updateShopDB(shopList);
             }
 
             @Override
             public void onFailure(Call<List<Shop>> call, Throwable t) {
-                Log.e("ERR", t.getMessage());
+                //show error message of Retrofit
+                Log.e(TAG, t.getMessage());
             }
         });
         return shopList;
     }
 
     private List<Shop> getShopsDataFromDB() {
+        //get list of shops from database
         ShopsProvider.DataBaseHelper db = new ShopsProvider.DataBaseHelper(getContext());
         if (db.getAllShops().size() > 0) {
         return db.getAllShops();
@@ -130,6 +137,7 @@ public class ShopFragment extends AbstractTabFragment implements SwipeRefreshLay
 
     @Override
     public void onRefresh() {
+        //refresh data by swiping
         getShopsData();
     }
 }

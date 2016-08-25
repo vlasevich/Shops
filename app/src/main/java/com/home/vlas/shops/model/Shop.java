@@ -52,22 +52,12 @@ public class Shop {
         this.id = id;
     }
 
-    public Shop withId(Integer id) {
-        this.id = id;
-        return this;
-    }
-
     public String getName() {
         return name;
     }
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public Shop withName(String name) {
-        this.name = name;
-        return this;
     }
 
     public String getAddress() {
@@ -78,22 +68,12 @@ public class Shop {
         this.address = address;
     }
 
-    public Shop withAddress(String address) {
-        this.address = address;
-        return this;
-    }
-
     public String getPhone() {
         return phone;
     }
 
     public void setPhone(String phone) {
         this.phone = phone;
-    }
-
-    public Shop withPhone(String phone) {
-        this.phone = phone;
-        return this;
     }
 
     public Location getLocation() {
@@ -104,22 +84,8 @@ public class Shop {
         this.location = location;
     }
 
-    public Shop withLocation(Location location) {
-        this.location = location;
-        return this;
-    }
-
     public String getWebsite() {
         return website;
-    }
-
-    public void setWebsite(String website) {
-        this.website = website;
-    }
-
-    public Shop withWebsite(String website) {
-        this.website = website;
-        return this;
     }
 
 }

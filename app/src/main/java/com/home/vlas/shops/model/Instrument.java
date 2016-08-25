@@ -32,22 +32,12 @@ public class Instrument {
         this.instrument = instrument;
     }
 
-    public Instrument withInstrument(DetailedInstrument instrument) {
-        this.instrument = instrument;
-        return this;
-    }
-
     public Integer getQuantity() {
         return quantity;
     }
 
     public void setQuantity(Integer quantity) {
         this.quantity = quantity;
-    }
-
-    public Instrument withQuantity(Integer quantity) {
-        this.quantity = quantity;
-        return this;
     }
 
 }
