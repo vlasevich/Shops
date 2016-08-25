@@ -12,6 +12,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.home.vlas.shops.model.DetailedInstrument;
 import com.home.vlas.shops.model.Instrument;
@@ -29,6 +30,7 @@ public class ShopsProvider extends ContentProvider {
     public static final Uri CONTENT_URI = Uri.parse(URL);
     static final int uriCode = 1;
     static final UriMatcher uriMatcher;
+    private static final String TAG = ShopsProvider.class.getSimpleName();
     private static final int DATABASE_VERSION = 2;
     private static final String DATABASE_NAME = "ShopDatabase";
     private static final String TABLE_SHOP = "shop";
@@ -38,7 +40,7 @@ public class ShopsProvider extends ContentProvider {
     private static final String KEY_ADDRESS = "address";
     private static final String KEY_PHONE = "phone";
     private static final String KEY_LATITUDE = "latitude";
-    private static final String KEY_LONGTITUDE = "longitude";
+    private static final String KEY_LONGITUDE = "longitude";
     private static final String KEY_INST_PRI_KEY = "id";
     private static final String KEY_SHOP_INST_ID = "shop_id";
     private static final String KEY_INSTRUMENT_ID = "inst_id";
@@ -48,13 +50,15 @@ public class ShopsProvider extends ContentProvider {
     private static final String KEY_TYPE = "type";
     private static final String KEY_PRICE = "price";
     private static final String KEY_QUANTITY = "quantity";
+
     private static final String CREATE_TABLE_SHOP = "CREATE TABLE " + TABLE_SHOP
             + "(" + KEY_SHOP_ID + " INTEGER PRIMARY KEY,"
             + KEY_NAME + " TEXT,"
             + KEY_ADDRESS + " TEXT,"
             + KEY_PHONE + " TEXT,"
             + KEY_LATITUDE + " TEXT,"
-            + KEY_LONGTITUDE + " TEXT);";
+            + KEY_LONGITUDE + " TEXT);";
+
     private static final String CREATE_TABLE_INSTRUMENTS = "CREATE TABLE " + TABLE_INSTRUMENT
             + "(" + KEY_INST_PRI_KEY + " INTEGER PRIMARY KEY AUTOINCREMENT,"
             + KEY_SHOP_INST_ID + " TEXT,"
@@ -97,12 +101,16 @@ public class ShopsProvider extends ContentProvider {
             default:
                 throw new IllegalArgumentException("Unknown URI " + uri);
         }
-        if (sortOrder == null || sortOrder == "") {
+        if (sortOrder == null || sortOrder.isEmpty()) {
             sortOrder = "id";
         }
         Cursor c = qb.query(db, projection, selection, selectionArgs, null,
                 null, sortOrder);
-        c.setNotificationUri(getContext().getContentResolver(), uri);
+        try {
+            c.setNotificationUri(getContext().getContentResolver(), uri);
+        } catch (NullPointerException e) {
+            Log.e(TAG, e.getMessage());
+        }
         return c;
     }
 
@@ -110,11 +118,12 @@ public class ShopsProvider extends ContentProvider {
     @Override
     public String getType(Uri uri) {
         switch (uriMatcher.match(uri)) {
-            case uriCode:
+            case uriCode: {
                 return "vnd.android.cursor.dir/shops";
-
-            default:
+            }
+            default: {
                 throw new IllegalArgumentException("Unsupported URI: " + uri);
+            }
         }
     }
 
@@ -124,7 +133,11 @@ public class ShopsProvider extends ContentProvider {
         long rowID = db.insert(TABLE_SHOP, "", values);
         if (rowID > 0) {
             Uri _uri = ContentUris.withAppendedId(CONTENT_URI, rowID);
-            getContext().getContentResolver().notifyChange(_uri, null);
+            try {
+                getContext().getContentResolver().notifyChange(_uri, null);
+            } catch (NullPointerException e) {
+                Log.e(TAG, e.getMessage());
+            }
             return _uri;
         }
         throw new SQLException("Failed to add a record into " + uri);
@@ -134,13 +147,19 @@ public class ShopsProvider extends ContentProvider {
     public int delete(Uri uri, String selection, String[] strings) {
         int count = 0;
         switch (uriMatcher.match(uri)) {
-            case uriCode:
+            case uriCode: {
                 count = db.delete(TABLE_SHOP, selection, strings);
                 break;
-            default:
+            }
+            default: {
                 throw new IllegalArgumentException("Unknown URI " + uri);
+            }
         }
-        getContext().getContentResolver().notifyChange(uri, null);
+        try {
+            getContext().getContentResolver().notifyChange(uri, null);
+        } catch (NullPointerException e) {
+            Log.e(TAG, e.getMessage());
+        }
         return count;
     }
 
@@ -148,20 +167,26 @@ public class ShopsProvider extends ContentProvider {
     public int update(Uri uri, ContentValues values, String selection, String[] strings) {
         int count = 0;
         switch (uriMatcher.match(uri)) {
-            case uriCode:
+            case uriCode: {
                 count = db.update(TABLE_SHOP, values, selection, strings);
                 break;
-            default:
+            }
+            default: {
                 throw new IllegalArgumentException("Unknown URI " + uri);
+            }
         }
-        getContext().getContentResolver().notifyChange(uri, null);
+        try {
+            getContext().getContentResolver().notifyChange(uri, null);
+        } catch (NullPointerException e) {
+            Log.e(TAG, e.getMessage());
+        }
+
         return count;
     }
 
 
     public static class DataBaseHelper extends SQLiteOpenHelper {
         private final String TAG = DataBaseHelper.class.getSimpleName();
-
 
         public DataBaseHelper(Context context) {
             super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -175,11 +200,9 @@ public class ShopsProvider extends ContentProvider {
             values.put(KEY_ADDRESS, shop.getAddress());
             values.put(KEY_PHONE, shop.getPhone());
             values.put(KEY_LATITUDE, shop.getLocation().getLatitude());
-            values.put(KEY_LONGTITUDE, shop.getLocation().getLongitude());
+            values.put(KEY_LONGITUDE, shop.getLocation().getLongitude());
 
-            long shopId = db.insert(TABLE_SHOP, null, values);
-
-            return shopId;
+            return db.insert(TABLE_SHOP, null, values);
         }
 
         public Shop getShop(long shopId) {
@@ -191,15 +214,17 @@ public class ShopsProvider extends ContentProvider {
                 c.moveToFirst();
             }
             Shop shop = new Shop();
-            shop.setId(c.getInt(c.getColumnIndex(KEY_SHOP_ID)));
-            shop.setName(c.getString(c.getColumnIndex(KEY_NAME)));
-            shop.setAddress(c.getString(c.getColumnIndex(KEY_ADDRESS)));
-            shop.setPhone(c.getString(c.getColumnIndex(KEY_PHONE)));
-            Location location = new Location(
-                    c.getInt(c.getColumnIndex(KEY_LATITUDE))
-                    , c.getInt(c.getColumnIndex(KEY_LONGTITUDE)
-            ));
-            shop.setLocation(location);
+            if (c != null) {
+                shop.setId(c.getInt(c.getColumnIndex(KEY_SHOP_ID)));
+                shop.setName(c.getString(c.getColumnIndex(KEY_NAME)));
+                shop.setAddress(c.getString(c.getColumnIndex(KEY_ADDRESS)));
+                shop.setPhone(c.getString(c.getColumnIndex(KEY_PHONE)));
+                Location location = new Location(
+                        c.getInt(c.getColumnIndex(KEY_LATITUDE))
+                        , c.getInt(c.getColumnIndex(KEY_LONGITUDE)
+                ));
+                shop.setLocation(location);
+            }
 
             return shop;
         }
@@ -219,7 +244,7 @@ public class ShopsProvider extends ContentProvider {
                     shop.setPhone(c.getString(c.getColumnIndex(KEY_PHONE)));
                     Location location = new Location(
                             c.getInt(c.getColumnIndex(KEY_LATITUDE))
-                            , c.getInt(c.getColumnIndex(KEY_LONGTITUDE)
+                            , c.getInt(c.getColumnIndex(KEY_LONGITUDE)
                     ));
                     shop.setLocation(location);
                     shopList.add(shop);
@@ -247,7 +272,7 @@ public class ShopsProvider extends ContentProvider {
             values.put(KEY_ADDRESS, shop.getAddress());
             values.put(KEY_PHONE, shop.getPhone());
             values.put(KEY_LATITUDE, shop.getLocation().getLatitude());
-            values.put(KEY_LONGTITUDE, shop.getLocation().getLongitude());
+            values.put(KEY_LONGITUDE, shop.getLocation().getLongitude());
 
             return db.update(TABLE_SHOP, values, KEY_SHOP_ID + "=?", new String[]{String.valueOf(shop.getId())});
         }
@@ -269,8 +294,7 @@ public class ShopsProvider extends ContentProvider {
             values.put(KEY_PRICE, inst.getInstrument().getPrice());
             values.put(KEY_QUANTITY, inst.getQuantity());
 
-            long instId = db.insert(TABLE_INSTRUMENT, null, values);
-            return instId;
+            return db.insert(TABLE_INSTRUMENT, null, values);
         }
 
         public List<Instrument> getAllInstruments() {
@@ -282,9 +306,6 @@ public class ShopsProvider extends ContentProvider {
             if (c.moveToFirst()) {
                 do {
                     Instrument inst = new Instrument();
-
-                    //Log.e("TAG",c.getString(c.getColumnIndex(KEY_INST_PRI_KEY)));
-
                     inst.setQuantity(c.getInt(c.getColumnIndex(KEY_QUANTITY)));
                     DetailedInstrument detailInst = new DetailedInstrument();
                     detailInst.setId(c.getInt(c.getColumnIndex(KEY_INSTRUMENT_ID)));
@@ -304,15 +325,13 @@ public class ShopsProvider extends ContentProvider {
             List<Instrument> instList = new ArrayList<>();
             String selectQuery = "SELECT * FROM " + TABLE_INSTRUMENT
                     + " WHERE " + KEY_SHOP_INST_ID + " = " + shopId;
+
             SQLiteDatabase db = this.getReadableDatabase();
             Cursor c = db.rawQuery(selectQuery, null);
 
             if (c.moveToFirst()) {
                 do {
                     Instrument inst = new Instrument();
-
-                    //Log.e("TAG",c.getString(c.getColumnIndex(KEY_INST_PRI_KEY)));
-
                     inst.setQuantity(c.getInt(c.getColumnIndex(KEY_QUANTITY)));
                     DetailedInstrument detailInst = new DetailedInstrument();
                     detailInst.setId(c.getInt(c.getColumnIndex(KEY_INSTRUMENT_ID)));
