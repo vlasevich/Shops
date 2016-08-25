@@ -73,6 +73,7 @@ public class ShopFragment extends AbstractTabFragment implements SwipeRefreshLay
         } else {
             Log.i(TAG, "NOT NEED TO UPDATE BD");
         }
+        db.closeBD();
     }
 
 
@@ -118,6 +119,7 @@ public class ShopFragment extends AbstractTabFragment implements SwipeRefreshLay
         } else {
             Log.i(TAG, "DATABASE IS EMPTY");
         }
+        db.closeBD();
         return null;
     }
 

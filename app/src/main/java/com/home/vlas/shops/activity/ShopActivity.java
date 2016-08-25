@@ -110,6 +110,7 @@ public class ShopActivity extends Activity implements SwipeRefreshLayout.OnRefre
         } else {
             Log.i(TAG, "DATABASE IS EMPTY");
         }
+        db.closeBD();
         return null;
     }
 
@@ -147,6 +148,7 @@ public class ShopActivity extends Activity implements SwipeRefreshLayout.OnRefre
         } else {
             Log.i(TAG, "NOT NEED TO UPDATE BD");
         }
+        db.closeBD();
     }
 
     @Override
