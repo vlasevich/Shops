@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.home.vlas.shops.R;
 import com.home.vlas.shops.adapter.ShopListAdapter;
@@ -68,10 +69,12 @@ public class ShopFragment extends AbstractTabFragment implements SwipeRefreshLay
         if (db.getAllShops().size() < list.size()) {
             int dif = list.size() - db.getAllShops().size();
             for (int i = list.size() - 1; i > list.size() - dif; i--) {
-                db.createShop(list.get(i));
+                // another method
+                // db.createShop(list.get(i));
+                db.createShopV2(getContext(), list.get(i));
             }
         } else {
-            Log.i(TAG, "NOT NEED TO UPDATE BD");
+            Log.i(TAG, "not need to update DB");
         }
         db.closeBD();
     }
@@ -117,7 +120,8 @@ public class ShopFragment extends AbstractTabFragment implements SwipeRefreshLay
         if (db.getAllShops().size() > 0) {
         return db.getAllShops();
         } else {
-            Log.i(TAG, "DATABASE IS EMPTY");
+            Log.i(TAG, "database is empty");
+            Toast.makeText(getContext(), "no data", Toast.LENGTH_SHORT).show();
         }
         db.closeBD();
         return null;

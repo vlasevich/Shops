@@ -28,10 +28,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MapFragment extends AbstractTabFragment {
+    private static final double LATITUDE=51.646637;
+    private static final double LONGITUDE=39.198014;
+    private static final float ZOOM=15.0f;
     final int LAYOUT = R.layout.fragment_map;
     final String TAG = MapFragment.class.getSimpleName();
-    private ShopsProvider.DataBaseHelper db;
-    private SupportMapFragment mSupportMapFragment;
 
     public static MapFragment getInstance(Context context) {
         Bundle args = new Bundle();
@@ -42,6 +43,8 @@ public class MapFragment extends AbstractTabFragment {
         return fragment;
     }
 
+
+
     public void setContext(Context context) {
         this.context = context;
     }
@@ -50,6 +53,7 @@ public class MapFragment extends AbstractTabFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(LAYOUT, container, false);
+
         return this.view;
 
     }
@@ -58,17 +62,14 @@ public class MapFragment extends AbstractTabFragment {
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
         if (isVisibleToUser) {
-            System.out.println("VISIBLE");
             initMap();
-            //addDataToDBTest();
-        } else {
-            System.out.println("INVISIBLE");
+
         }
     }
 
     private void initMap() {
         Log.i(TAG, "Map init");
-        mSupportMapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.mapwhere);
+        SupportMapFragment mSupportMapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.mapwhere);
         if (mSupportMapFragment == null) {
             FragmentManager fragmentManager = getFragmentManager();
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -85,7 +86,7 @@ public class MapFragment extends AbstractTabFragment {
                         googleMap.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
                         googleMap.getUiSettings().setAllGesturesEnabled(true);
 
-                        CameraPosition cameraPosition = new CameraPosition.Builder().target(new LatLng(48.464095, 35.045630)).zoom(15.0f).build();
+                        CameraPosition cameraPosition = new CameraPosition.Builder().target(new LatLng(LATITUDE, LONGITUDE)).zoom(ZOOM).build();
                         //CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(cameraPosition);
                         googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 
@@ -123,7 +124,7 @@ public class MapFragment extends AbstractTabFragment {
     }
 
     private List<MarkerOptions> getShopsLocations() {
-        db = new ShopsProvider.DataBaseHelper(getContext());
+        ShopsProvider.DataBaseHelper db = new ShopsProvider.DataBaseHelper(getContext());
         List<MarkerOptions> shopLocList = new ArrayList<>();
         for (Shop shop : db.getAllShops()) {
             shopLocList.add((new MarkerOptions().position(

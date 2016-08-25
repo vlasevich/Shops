@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.home.vlas.shops.R;
 import com.home.vlas.shops.adapter.InstrumentsListAdapter;
@@ -21,6 +22,7 @@ import com.home.vlas.shops.utils.ConnectivityReceiver;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import retrofit2.Call;
@@ -87,11 +89,14 @@ public class ShopActivity extends Activity implements SwipeRefreshLayout.OnRefre
 
     private void getInstData() {
         if (checkConnection()) {
-            Log.i(TAG, "READ DATA FROM WEB");
+            Log.i(TAG, "read data from web");
             getInstDataFromWeb(shopId);
         } else {
-            Log.i(TAG, "READ DATA FROM DB");
+            Log.i(TAG, "read data from db");
             instList = getDataFromBD();
+            if (instList != null) {
+                Collections.reverse(instList);
+            }
             InstrumentsListAdapter adapter = new InstrumentsListAdapter(ShopActivity.this, instList);
             listView.setAdapter(adapter);
         }
@@ -108,7 +113,8 @@ public class ShopActivity extends Activity implements SwipeRefreshLayout.OnRefre
         if (db.getAllInstByShopId(shopId).size() > 0) {
             return db.getAllInstByShopId(shopId);
         } else {
-            Log.i(TAG, "DATABASE IS EMPTY");
+            Log.i(TAG, "database is empty");
+            Toast.makeText(getApplicationContext(), "no data", Toast.LENGTH_SHORT).show();
         }
         db.closeBD();
         return null;
@@ -144,9 +150,9 @@ public class ShopActivity extends Activity implements SwipeRefreshLayout.OnRefre
             for (int i = list.size() - 1; i > list.size() - dif; i--) {
                 db.createInstrument(shopId, list.get(i));
             }
-            Log.i(TAG, "WRITE TO DB ALL INSTs");
+            Log.i(TAG, "insert to db insts");
         } else {
-            Log.i(TAG, "NOT NEED TO UPDATE BD");
+            Log.i(TAG, "not need to update db");
         }
         db.closeBD();
     }

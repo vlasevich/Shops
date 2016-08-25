@@ -8,15 +8,17 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.home.vlas.shops.adapter.TabsPagerFragmentAdapter;
 import com.home.vlas.shops.utils.ConnectivityReceiver;
 import com.home.vlas.shops.utils.ShopApplication;
 
-public class MainActivity extends AppCompatActivity
-        implements ConnectivityReceiver.ConnectivityReceiverListener {
+public class MainActivity extends AppCompatActivity implements ConnectivityReceiver.ConnectivityReceiverListener {
     private static final int LAYOUT = R.layout.main_activity;
+    private static final String TAG = MainActivity.class.getSimpleName();
     private DrawerLayout drawerLayout;
     private ViewPager viewPager;
 
@@ -28,8 +30,6 @@ public class MainActivity extends AppCompatActivity
         initToolbar();
         initNavigationView();
         initTabs();
-
-        checkConnection();
     }
 
     private void initToolbar() {
@@ -66,11 +66,11 @@ public class MainActivity extends AppCompatActivity
                 drawerLayout.closeDrawers();
                 switch (item.getItemId()) {
                     case R.id.actionNotificationItem: {
-                        showNotificationTab();
+                        viewPager.setCurrentItem(Constants.TAB_ONE);
                         break;
                     }
                     case R.id.actionNotificationItem2: {
-                        showNotificationTab2();
+                        viewPager.setCurrentItem(Constants.TAB_TWO);
                         break;
                     }
                 }
@@ -82,18 +82,9 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onNetworkConnectionChanged(boolean isConnected) {
         if (isConnected) {
-            System.out.println("CONNECTED");
+            Log.i(TAG, "has internet connection");
         } else {
-            System.out.println("NOT CONNECTED");
-        }
-    }
-
-    private void checkConnection() {
-        boolean isConnected = ConnectivityReceiver.isConnected();
-        if (isConnected) {
-            System.out.println("CONNECTED");
-        } else {
-            System.out.println("NOT CONNECTED");
+            Toast.makeText(getApplicationContext(), "No internet connection", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -103,11 +94,4 @@ public class MainActivity extends AppCompatActivity
         ShopApplication.getInstance().setConnectivityListener(this);
     }
 
-    private void showNotificationTab() {
-        viewPager.setCurrentItem(Constants.TAB_ONE);
-    }
-
-    private void showNotificationTab2() {
-        viewPager.setCurrentItem(Constants.TAB_TWO);
-    }
 }

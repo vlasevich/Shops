@@ -205,6 +205,17 @@ public class ShopsProvider extends ContentProvider {
             return db.insert(TABLE_SHOP, null, values);
         }
 
+        public void createShopV2(Context context,Shop shop){
+            ContentValues values=new ContentValues();
+            values.put(KEY_SHOP_ID, shop.getId());
+            values.put(KEY_NAME, shop.getName());
+            values.put(KEY_ADDRESS, shop.getAddress());
+            values.put(KEY_PHONE, shop.getPhone());
+            values.put(KEY_LATITUDE, shop.getLocation().getLatitude());
+            values.put(KEY_LONGITUDE, shop.getLocation().getLongitude());
+            Uri uri=context.getContentResolver().insert(ShopsProvider.CONTENT_URI,values);
+        }
+
         public Shop getShop(long shopId) {
             SQLiteDatabase db = this.getWritableDatabase();
             String selectQuery = "SELECT * FROM " + TABLE_SHOP
